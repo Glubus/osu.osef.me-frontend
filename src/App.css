@@ -1,0 +1,88 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* Styles globaux pour l'application */
+.App {
+  min-height: 100vh;
+}
+
+/* Amélioration des transitions */
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Styles pour les cartes beatmap */
+.card figure {
+  border-radius: 0.5rem;
+}
+
+.card figure img {
+  transition: transform 0.3s ease;
+}
+
+.card:hover figure img {
+  transform: scale(1.05);
+}
+
+/* Styles pour les badges de difficulté */
+.badge {
+  font-weight: 600;
+}
+
+/* Amélioration de la pagination */
+.join .btn {
+  min-width: 2.5rem;
+}
+
+/* Styles pour les inputs de recherche */
+.input:focus {
+  box-shadow: 0 0 0 2px hsl(var(--p) / 0.2);
+}
+
+/* Animation pour les cartes en loading */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Amélioration de l'apparence des stats */
+.stats {
+  background: hsl(var(--b1));
+  border: 1px solid hsl(var(--b3));
+}
+
+/* Styles pour les boutons de filtres */
+.btn-outline:hover {
+  background-color: hsl(var(--p));
+  border-color: hsl(var(--p));
+  color: hsl(var(--pc));
+}
+
+/* Responsive design amélioré */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
