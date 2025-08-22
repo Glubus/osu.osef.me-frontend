@@ -15,6 +15,5 @@ dist/
 !.vscode/extensions.json
 .idea
 
-compose.yml
 deploy.sh
 *.conf

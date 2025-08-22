@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { BeatmapWithDetails } from '../../../types/beatmap';
-import BeatmapList from '../../templates/BeatmapList/BeatmapList';
+import BeatmapList from './BeatmapList';
 import ViewToggle from '../../molecules/beatmap/ViewToggle/ViewToggle';
 import type { ViewMode } from '../../molecules/beatmap/ViewToggle/ViewToggle';
 
