@@ -2,9 +2,9 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
 import type { BeatmapWithDetails, BeatmapFilters } from '../types/beatmap';
 import { beatmapService } from '../api/services';
-import SearchBar from '../components/beatmap/search/SearchBar';
-import AdvancedFilters from '../components/beatmap/search/AdvancedFilters';
-import BeatmapList from '../components/beatmap/list/BeatmapList';
+import SearchBar from '../components/organisms/search/SearchBar/SearchBar';
+import AdvancedFilters from '../components/organisms/search/AdvancedFilter/AdvancedFilter';
+import BeatmapView from '../components/templates/BeatmapList/BeatmapView';
 
 const BeatmapBrowser: React.FC = () => {
   const [beatmaps, setBeatmaps] = useState<BeatmapWithDetails[]>([]);
@@ -174,7 +174,7 @@ const BeatmapBrowser: React.FC = () => {
         )}
 
         {/* Liste des beatmaps */}
-        <BeatmapList
+        <BeatmapView
           beatmaps={beatmaps}
           loading={false} // Pas de loading sur la liste principale
           onBeatmapClick={handleBeatmapClick}
