@@ -33,7 +33,6 @@ export class MapParserService {
       const maniaHitObjects: HitObject[] = [];
       
       beatmap.hitObjects.forEach(hitObject => {
-        console.log(hitObject);
         // Convertir les coordonnées osu! en colonnes mania 4K
         const column = Math.floor((hitObject.startPosition.x / 512) * 4);
         

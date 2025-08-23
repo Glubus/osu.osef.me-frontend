@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Play, Download, Heart, Share2 } from 'lucide-react';
 import { beatmapService } from '../api/services';
-import MSDRadarChart from '../components/beatmap/charts/MSDRadarChart';
-import OsuManiaPreview from '../components/beatmap/preview/OsuManiaPreview';
+import MSDRadarChart from '../components/molecules/beatmap/MSDCharts/MSDRadarChart';
+import OsuManiaPreviewWebGL from '../components/organisms/beatmap/BeatmapPreview/BeatmapPreview';
 import { calculateNPS, formatDuration } from '../utils/calculations';
 import { calcDistributionSmart, createBeatmapFromHitObjects } from '../services/distribution';
 import { MapParserService } from '../services/map_parser';
-import type { BeatmapsetCompleteExtended, BeatmapWithMSD, MSDDataPoint, NPSDataPoint } from '../types/beatmap';
+import type { BeatmapsetCompleteExtended, MSDDataPoint, NPSDataPoint } from '../types/beatmap';
 import { getRatingColorClass } from '../types/beatmap';
 
 const BeatmapDetail: React.FC = () => {
@@ -83,12 +83,13 @@ const BeatmapDetail: React.FC = () => {
 
   const [npsData, setNpsData] = useState<NPSDataPoint[]>([]);
 
-  const loadNPSData = async () => {
+  const loadNPSData = useCallback(async () => {
     if (!currentBeatmap?.beatmap.id) {
       return;
     }
 
     try {
+      console.log("Loading NPS data for beatmap:", currentBeatmap.beatmap.id);
       // Récupérer les hit objects depuis le fichier .osu
       const hitObjects = await MapParserService.parseOsuFile(currentBeatmap.beatmap.id);
       const beatmap = createBeatmapFromHitObjects(hitObjects);
@@ -109,10 +110,11 @@ const BeatmapDetail: React.FC = () => {
       }));
 
       setNpsData(newNpsData);
+      console.log("NPS data loaded successfully");
     } catch (error) {
       console.error('Erreur lors du calcul de la distribution NPS:', error);
     }
-  };
+  }, [currentBeatmap?.beatmap.id, currentBeatmap?.beatmap.total_time]);
 
   const [previewTime, setPreviewTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -156,9 +158,10 @@ const BeatmapDetail: React.FC = () => {
   // Charger les données NPS quand la beatmap change
   useEffect(() => {
     if (currentBeatmap?.beatmap.id) {
+      console.log("BeatmapDetail: Loading NPS data, currentBeatmap.id:", currentBeatmap.beatmap.id);
       loadNPSData();
     }
-  }, [currentBeatmap?.beatmap.id]);
+  }, [currentBeatmap?.beatmap.id, loadNPSData]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -355,7 +358,7 @@ const BeatmapDetail: React.FC = () => {
               <h3 className="card-title">Prévisualisation</h3>
               
               {/* Preview de la beatmap avec NPS intégré */}
-              <OsuManiaPreview 
+              <OsuManiaPreviewWebGL 
                 currentTime={previewTime} 
                 totalTime={beatmap.total_time} 
                 beatmap={beatmap}

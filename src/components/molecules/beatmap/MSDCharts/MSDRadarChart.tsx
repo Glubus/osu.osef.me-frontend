@@ -1,6 +1,6 @@
 import React from 'react';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts';
-import type { MSDDataPoint } from '../../../types/beatmap';
+import type { MSDDataPoint } from '../../../../types/beatmap';
 
 interface MSDRadarChartProps {
   data: MSDDataPoint[];
