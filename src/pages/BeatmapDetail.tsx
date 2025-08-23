@@ -35,7 +35,7 @@ const BeatmapDetail: React.FC = () => {
       // Si aucun beatmapOsuId n'est fourni, rediriger vers la première beatmap
       if (!beatmapOsuId && data.beatmap.length > 0) {
         const firstBeatmapOsuId = data.beatmap[0].beatmap.osu_id;
-        navigate(`/beatmapset/${beatmapsetOsuId}/${firstBeatmapOsuId}`, { replace: true });
+        navigate(`/beatmapsets/${beatmapsetOsuId}/${firstBeatmapOsuId}`, { replace: true });
         return;
       }
       

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { BeatmapFiltersResponse, BeatmapFilters, BeatmapsetCompleteExtended } from '../types/beatmap';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'https://api.osef.me/api';
 
 // Instance axios avec configuration de base
 const apiClient = axios.create({
