@@ -39,7 +39,7 @@ export class MapParserService {
         if (hitObject.hitType === 128) { // Hold note
             maniaHitObjects.push({
                 startTime: hitObject.startTime,
-                endTime: hitObject.endTime,
+                endTime: (hitObject as any).endTime,
                 column,
                 type: 'hold'
             });
