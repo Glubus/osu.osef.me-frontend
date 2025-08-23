@@ -1,2 +1,2 @@
 // Export des types
-export * from './beatmap';
+export * from "./beatmap";
