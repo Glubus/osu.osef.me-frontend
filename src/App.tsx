@@ -14,8 +14,8 @@ const App = () => {
       <div className="App">
         <Routes>
           <Route path="/" element={<BeatmapBrowser />} />
-          <Route path="/beatmapset/:beatmapsetOsuId/:beatmapOsuId" element={<BeatmapDetail />} />
-          <Route path="/beatmapset/:beatmapsetOsuId" element={<BeatmapDetail />} />
+          <Route path="/beatmapsets/:beatmapsetOsuId/:beatmapOsuId" element={<BeatmapDetail />} />
+          <Route path="/beatmapsets/:beatmapsetOsuId" element={<BeatmapDetail />} />
         </Routes>
       </div>
     </Router>
