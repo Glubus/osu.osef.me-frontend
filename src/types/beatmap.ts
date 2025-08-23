@@ -141,3 +141,83 @@ export interface NPSDataPoint {
   time: number;
   density: number;
 }
+
+// Nouveaux types pour la structure d'API beatmapset
+export interface BeatmapsetComplete {
+  id: number;
+  osu_id: number;
+  title: string;
+  artist: string;
+  creator: string;
+  source: string;
+  tags: string;
+  status: string;
+  genre_id: number;
+  language_id: number;
+  favourite_count: number;
+  play_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BeatmapComplete {
+  id: number;
+  osu_id: number;
+  beatmapset_id: number;
+  difficulty: string;
+  difficulty_rating: number;
+  count_circles: number;
+  count_sliders: number;
+  count_spinners: number;
+  max_combo: number;
+  drain_time: number;
+  total_time: number;
+  bpm: number;
+  cs: number;
+  ar: number;
+  od: number;
+  hp: number;
+  mode: number;
+  status: string;
+  file_md5: string;
+  file_path: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MSDComplete {
+  id: number;
+  beatmap_id: number;
+  overall: number;
+  stream: number;
+  jumpstream: number;
+  handstream: number;
+  stamina: number;
+  jackspeed: number;
+  chordjack: number;
+  technical: number;
+  rate: number;
+  main_pattern: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BeatmapWithMSD {
+  beatmap: BeatmapComplete;
+  msd: MSDComplete;
+}
+
+export interface BeatmapsetCompleteExtended {
+  beatmapset: BeatmapsetComplete;
+  beatmap: BeatmapWithMSD[];
+}
+
+// Fonction utilitaire pour les couleurs de rating
+export const getRatingColorClass = (rating: number): string => {
+  if (rating < 15) return 'badge-success';
+  if (rating < 25) return 'badge-info';
+  if (rating < 30) return 'badge-warning';
+  if (rating < 35) return 'badge-error';
+  if (rating < 40) return 'badge-accent';
+  return 'badge-primary'; // Pour les ratings très élevés (40+)
+};

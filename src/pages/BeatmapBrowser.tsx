@@ -21,7 +21,7 @@ const BeatmapBrowser: React.FC = () => {
   } = useBeatmapBrowser();
 
   const handleBeatmapClick = (beatmap: BeatmapWithDetails) => {
-    window.location.href = `/beatmap/${beatmap.beatmap.id}`;
+    window.location.href = `/beatmapset/${beatmap.beatmapset.osu_id}/${beatmap.beatmap.osu_id}`;
   };
 
   return (

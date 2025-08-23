@@ -1,5 +1,6 @@
 import React from 'react';
 import type { BeatmapCardProps } from '../../../../types/beatmap';
+import { getRatingColorClass } from '../../../../types/beatmap';
 import Image from '../../../atom/Image/Image';
 import Badge from '../../../atom/Badge/Badge';
 
@@ -14,11 +15,7 @@ const BeatmapTableRow: React.FC<BeatmapCardProps> = ({ beatmap, onClick }) => {
 
   const getOverallColor = (overall: string) => {
     const num = parseFloat(overall);
-    if (num < 2) return 'badge-success';
-    if (num < 4) return 'badge-info';
-    if (num < 6) return 'badge-warning';
-    if (num < 8) return 'badge-error';
-    return 'badge-accent';
+    return getRatingColorClass(num);
   };
 
   return (

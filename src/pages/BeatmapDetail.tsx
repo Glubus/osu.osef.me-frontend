@@ -7,28 +7,45 @@ import OsuManiaPreview from '../components/beatmap/preview/OsuManiaPreview';
 import { calculateNPS, formatDuration } from '../utils/calculations';
 import { calcDistributionSmart, createBeatmapFromHitObjects } from '../services/distribution';
 import { MapParserService } from '../services/map_parser';
-import type { BeatmapDetailData, MSDDataPoint, NPSDataPoint } from '../types/beatmap';
+import type { BeatmapsetCompleteExtended, BeatmapWithMSD, MSDDataPoint, NPSDataPoint } from '../types/beatmap';
+import { getRatingColorClass } from '../types/beatmap';
 
 const BeatmapDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { beatmapsetOsuId, beatmapOsuId } = useParams<{ beatmapsetOsuId: string; beatmapOsuId: string }>();
   const navigate = useNavigate();
-  const [beatmapData, setBeatmapData] = useState<BeatmapDetailData | null>(null);
+  const [beatmapsetData, setBeatmapsetData] = useState<BeatmapsetCompleteExtended | null>(null);
+  const [currentBeatmapIndex, setCurrentBeatmapIndex] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (id) {
-      loadBeatmapDetail(parseInt(id));
+    if (beatmapsetOsuId) {
+      loadBeatmapsetDetail(parseInt(beatmapsetOsuId), beatmapOsuId ? parseInt(beatmapOsuId) : undefined);
     }
-  }, [id]);
+  }, [beatmapsetOsuId, beatmapOsuId]);
 
-  const loadBeatmapDetail = async (beatmapId: number) => {
+  const loadBeatmapsetDetail = async (beatmapsetOsuId: number, beatmapOsuId?: number) => {
     setLoading(true);
     setError(null);
     
     try {
-      const data = await beatmapService.getBeatmapById(beatmapId);
-      setBeatmapData(data);
+      const data = await beatmapService.getBeatmapsetById(beatmapsetOsuId);
+      setBeatmapsetData(data);
+      
+      // Si aucun beatmapOsuId n'est fourni, rediriger vers la première beatmap
+      if (!beatmapOsuId && data.beatmap.length > 0) {
+        const firstBeatmapOsuId = data.beatmap[0].beatmap.osu_id;
+        navigate(`/beatmapset/${beatmapsetOsuId}/${firstBeatmapOsuId}`, { replace: true });
+        return;
+      }
+      
+      // Si un beatmapOsuId spécifique est fourni, trouver son index
+      if (beatmapOsuId) {
+        const index = data.beatmap.findIndex(b => b.beatmap.osu_id === beatmapOsuId);
+        if (index !== -1) {
+          setCurrentBeatmapIndex(index);
+        }
+      }
     } catch (err) {
       setError('Erreur lors du chargement de la beatmap');
       console.error('Erreur:', err);
@@ -37,31 +54,43 @@ const BeatmapDetail: React.FC = () => {
     }
   };
 
+  const currentBeatmap = beatmapsetData?.beatmap[currentBeatmapIndex];
+  const beatmapset = beatmapsetData?.beatmapset;
+
+  const handleBeatmapChange = (index: number) => {
+    setCurrentBeatmapIndex(index);
+    const newBeatmap = beatmapsetData?.beatmap[index];
+    if (newBeatmap) {
+      // Mettre à jour l'URL sans recharger la page
+      navigate(`/beatmapset/${beatmapsetOsuId}/${newBeatmap.beatmap.osu_id}`, { replace: true });
+    }
+  };
+
   const getMSDDataForRadar = (): MSDDataPoint[] => {
-    if (!beatmapData?.msd) return [];
+    if (!currentBeatmap?.msd) return [];
     
-    const { msd } = beatmapData;
+    const { msd } = currentBeatmap;
     return [
-      { name: 'Stream', value: parseFloat(msd.stream) },
-      { name: 'Jumpstream', value: parseFloat(msd.jumpstream) },
-      { name: 'Handstream', value: parseFloat(msd.handstream) },
-      { name: 'Stamina', value: parseFloat(msd.stamina) },
-      { name: 'Jackspeed', value: parseFloat(msd.jackspeed) },
-      { name: 'Chordjack', value: parseFloat(msd.chordjack) },
-      { name: 'Technical', value: parseFloat(msd.technical) }
+      { name: 'Stream', value: msd.stream },
+      { name: 'Jumpstream', value: msd.jumpstream },
+      { name: 'Handstream', value: msd.handstream },
+      { name: 'Stamina', value: msd.stamina },
+      { name: 'Jackspeed', value: msd.jackspeed },
+      { name: 'Chordjack', value: msd.chordjack },
+      { name: 'Technical', value: msd.technical }
     ];
   };
 
   const [npsData, setNpsData] = useState<NPSDataPoint[]>([]);
 
   const loadNPSData = async () => {
-    if (!beatmapData?.beatmap.id) {
+    if (!currentBeatmap?.beatmap.id) {
       return;
     }
 
     try {
       // Récupérer les hit objects depuis le fichier .osu
-      const hitObjects = await MapParserService.parseOsuFile(beatmapData.beatmap.id);
+      const hitObjects = await MapParserService.parseOsuFile(currentBeatmap.beatmap.id);
       const beatmap = createBeatmapFromHitObjects(hitObjects);
       
       // Calculer la distribution avec 200 barres
@@ -71,7 +100,7 @@ const BeatmapDetail: React.FC = () => {
         return;
       }
 
-      const totalTime = beatmapData.beatmap.total_time;
+      const totalTime = currentBeatmap.beatmap.total_time;
       const timePerBar = totalTime / 200;
 
       const newNpsData = distribution.map((density, index) => ({
@@ -105,10 +134,10 @@ const BeatmapDetail: React.FC = () => {
   useEffect(() => {
     let interval: number;
     
-    if (isPlaying && previewTime < (beatmapData?.beatmap.total_time || 0)) {
+    if (isPlaying && previewTime < (currentBeatmap?.beatmap.total_time || 0)) {
       interval = setInterval(() => {
         setPreviewTime(prev => {
-          const totalTime = beatmapData?.beatmap.total_time || 0;
+          const totalTime = currentBeatmap?.beatmap.total_time || 0;
           const newTime = prev + (1/30); // Incrément de 1/30 seconde pour vitesse normale
           if (newTime >= totalTime) {
             setIsPlaying(false);
@@ -122,14 +151,14 @@ const BeatmapDetail: React.FC = () => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isPlaying, previewTime, beatmapData?.beatmap.total_time]);
+  }, [isPlaying, previewTime, currentBeatmap?.beatmap.total_time]);
 
   // Charger les données NPS quand la beatmap change
   useEffect(() => {
-    if (beatmapData?.beatmap.id) {
+    if (currentBeatmap?.beatmap.id) {
       loadNPSData();
     }
-  }, [beatmapData?.beatmap.id]);
+  }, [currentBeatmap?.beatmap.id]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -141,6 +170,8 @@ const BeatmapDetail: React.FC = () => {
     }
   };
 
+
+
   if (loading) {
     return (
       <div className="min-h-screen bg-base-100 flex items-center justify-center">
@@ -149,7 +180,7 @@ const BeatmapDetail: React.FC = () => {
     );
   }
 
-  if (error || !beatmapData) {
+  if (error || !beatmapsetData || !currentBeatmap) {
     return (
       <div className="min-h-screen bg-base-100 flex items-center justify-center">
         <div className="text-center">
@@ -169,7 +200,7 @@ const BeatmapDetail: React.FC = () => {
     );
   }
 
-  const { beatmap, beatmapset, msd } = beatmapData;
+  const { beatmap, msd } = currentBeatmap;
   const nps = calculateNPS(beatmap.count_circles, beatmap.count_sliders, beatmap.total_time);
   const msdData = getMSDDataForRadar();
 
@@ -196,9 +227,16 @@ const BeatmapDetail: React.FC = () => {
             <div className="card bg-base-100 shadow-xl">
               <figure className="relative h-80">
                 <img 
-                  src={beatmapset.cover_url} 
-                  alt={`${beatmapset.artist} - ${beatmapset.title}`}
+                  src={beatmapset?.osu_id 
+                    ? `https://assets.ppy.sh/beatmaps/${beatmapset.osu_id}/covers/cover.jpg`
+                    : '/default-cover.jpg'
+                  }
+                  alt={`${beatmapset?.artist || 'Unknown Artist'} - ${beatmapset?.title || 'Unknown Title'}`}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/default-cover.jpg';
+                  }}
                 />
                 <div className="absolute inset-0 bg-black/50" />
                 <div className="absolute inset-0 p-6 flex flex-col justify-between text-white">
@@ -224,10 +262,10 @@ const BeatmapDetail: React.FC = () => {
                   {/* Informations principales */}
                   <div>
                     <h1 className="text-3xl font-bold mb-2">
-                      {beatmapset.title}
+                      {beatmapset?.title}
                     </h1>
                     <p className="text-xl mb-4">
-                      {beatmapset.artist}
+                      {beatmapset?.artist}
                     </p>
                     
                     {/* Stats compactes */}
@@ -251,6 +289,38 @@ const BeatmapDetail: React.FC = () => {
           <div className="card bg-base-100 shadow-xl h-fit">
             <div className="card-body">
               <h3 className="card-title">Actions</h3>
+              
+              {/* Sélecteur de beatmap avec badges */}
+              {beatmapsetData.beatmap.length > 1 && (
+                <div className="form-control w-full mb-4">
+                  <label className="label">
+                    <span className="label-text">Difficultés</span>
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {beatmapsetData.beatmap.map((beatmapWithMsd, index) => {
+                      const isActive = index === currentBeatmapIndex;
+                      const rating = beatmapWithMsd.msd.overall;
+                      const colorClass = getRatingColorClass(rating);
+                      
+                      return (
+                        <div key={beatmapWithMsd.beatmap.id} className="tooltip tooltip-top" data-tip={beatmapWithMsd.beatmap.difficulty}>
+                          <button
+                            onClick={() => handleBeatmapChange(index)}
+                            className={`badge badge-sm cursor-pointer transition-all duration-200 hover:scale-110 ${
+                              isActive 
+                                ? `${colorClass} text-white font-bold shadow-lg` 
+                                : `${colorClass} opacity-70 hover:opacity-100`
+                            }`}
+                          >
+                            {rating}★
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              
               <div className="flex flex-col gap-2">
                 <button className="btn btn-outline gap-2">
                   <Download className="w-4 h-4" />
@@ -309,7 +379,7 @@ const BeatmapDetail: React.FC = () => {
                   <tbody>
                     <tr>
                       <td className="font-semibold">Mapper</td>
-                      <td>{beatmapset.creator}</td>
+                      <td>{beatmapset?.creator}</td>
                     </tr>
                     <tr>
                       <td className="font-semibold">Circles</td>
@@ -363,6 +433,12 @@ const BeatmapDetail: React.FC = () => {
                   <div>
                     <h4 className="font-bold">✅ NPS (Notes Per Second)</h4>
                     <p>Calcul et affichage du NPS en temps réel</p>
+                  </div>
+                </div>
+                <div className="alert alert-success">
+                  <div>
+                    <h4 className="font-bold">✅ Sélecteur de difficulté</h4>
+                    <p>Navigation entre les différentes difficultés d'un beatmapset</p>
                   </div>
                 </div>
                 <div className="alert alert-info">

@@ -1,7 +1,7 @@
 import axios from 'axios';
-import type { BeatmapFiltersResponse, BeatmapFilters } from '../types/beatmap';
+import type { BeatmapFiltersResponse, BeatmapFilters, BeatmapsetCompleteExtended } from '../types/beatmap';
 
-const API_BASE_URL = 'https://api.osef.me/api';
+const API_BASE_URL = 'http://localhost:3001/api';
 
 // Instance axios avec configuration de base
 const apiClient = axios.create({
@@ -42,10 +42,12 @@ export const beatmapService = {
       });
       const url = `/beatmap/filters${queryParams ? `?${queryParams}` : ''}`;
       
+      console.log('🔍 API Request URL:', url);
       const response = await apiClient.get(url);
+      console.log('📦 API Response:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Erreur lors de la récupération des beatmaps:', error);
+      console.error('❌ Erreur lors de la récupération des beatmaps:', error);
       throw error;
     }
   },
@@ -57,6 +59,21 @@ export const beatmapService = {
       return response.data;
     } catch (error) {
       console.error(`Erreur lors de la récupération de la beatmap ${id}:`, error);
+      throw error;
+    }
+  },
+
+  // Nouvelle méthode pour récupérer un beatmapset complet avec toutes ses beatmaps
+  getBeatmapsetById: async (beatmapsetOsuId: number): Promise<BeatmapsetCompleteExtended> => {
+    try {
+      const url = `/beatmapset/${beatmapsetOsuId}`;
+      
+      console.log('🔍 Beatmapset API Request URL:', url);
+      const response = await apiClient.get(url);
+      console.log('📦 Beatmapset API Response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error(`❌ Erreur lors de la récupération du beatmapset ${beatmapsetOsuId}:`, error);
       throw error;
     }
   },

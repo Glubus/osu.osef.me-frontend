@@ -13,6 +13,18 @@ const BeatmapCard: React.FC<BeatmapCardProps> = ({ beatmap, onClick }) => {
     }
   };
 
+  // Vérification de sécurité pour beatmapset null
+  if (!beatmapset) {
+    return (
+      <div className="card bg-base-100 shadow-xl h-64 overflow-hidden">
+        <div className="h-full flex flex-col justify-center items-center text-center p-4">
+          <div className="text-6xl mb-2">😵</div>
+          <p className="text-sm text-base-content/60">Beatmapset non disponible</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div 
       className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer group"
@@ -20,8 +32,8 @@ const BeatmapCard: React.FC<BeatmapCardProps> = ({ beatmap, onClick }) => {
     >
       <figure className="relative h-64 overflow-hidden">
         <Image 
-          src={beatmapset.cover_url}
-          alt={`${beatmapset.artist} - ${beatmapset.title}`}
+          src={beatmapset.cover_url || '/default-cover.jpg'}
+          alt={`${beatmapset.artist || 'Unknown Artist'} - ${beatmapset.title || 'Unknown Title'}`}
           className="group-hover:scale-105 transition-transform duration-300"
         />
 
@@ -33,9 +45,9 @@ const BeatmapCard: React.FC<BeatmapCardProps> = ({ beatmap, onClick }) => {
             difficulty={map.difficulty}
           />
           <BeatmapFooterInfo 
-            artist={beatmapset.artist}
-            title={beatmapset.title}
-            creator={beatmapset.creator}
+            artist={beatmapset.artist || 'Unknown Artist'}
+            title={beatmapset.title || 'Unknown Title'}
+            creator={beatmapset.creator || 'Unknown Creator'}
           />
         </div>
       </figure>
