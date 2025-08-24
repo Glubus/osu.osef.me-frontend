@@ -6,14 +6,14 @@ import HeaderControls from "../../../molecules/beatmap/BeatmapPreview/HeaderCont
 import SettingsPanel from "../../../molecules/beatmap/BeatmapPreview/SettingsPanel";
 import HistogramWrapper from "../../../molecules/beatmap/BeatmapPreview/HistogramWrapper";
 import { useOsuManiaPixi } from "../../../../hooks/useOsuManiaPixi";
-import type { Beatmap, NPSDataPoint } from "../../../../types/beatmap";
+import type { BeatmapComplete, NPSDataPoint } from "../../../../types/beatmap";
 import type { HitObject } from "../../../../services/map_parser";
 import { MapParserService } from "../../../../services/map_parser";
 
 interface OsuManiaPreviewProps {
 	currentTime: number;
 	totalTime: number;
-	beatmap: Beatmap;
+	beatmap: BeatmapComplete;
 	isPlaying: boolean;
 	onPlayPause: () => void;
 	onReset: () => void;

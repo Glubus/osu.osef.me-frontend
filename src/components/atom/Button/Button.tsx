@@ -1,7 +1,7 @@
 import type React from "react";
 import clsx from "clsx";
 
-type ButtonVariant = "primary" | "outline";
+type ButtonVariant = "primary" | "outline" | "ghost" | "link";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 	children: React.ReactNode;

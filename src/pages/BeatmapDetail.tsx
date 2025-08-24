@@ -17,6 +17,7 @@ import type {
 	NPSDataPoint,
 } from "../types/beatmap";
 import { getRatingColorClass } from "../types/beatmap";
+import Button from "../components/atom/Button/Button";
 
 const BeatmapDetail: React.FC = () => {
 	const { beatmapsetOsuId, beatmapOsuId } = useParams<{
@@ -245,13 +246,16 @@ const BeatmapDetail: React.FC = () => {
 			{/* Header avec navigation */}
 			<div className="bg-base-200 border-b border-base-300">
 				<div className="container mx-auto px-4 py-4">
-					<button
+					<Button
 						onClick={() => navigate("/")}
-						className="btn btn-ghost btn-sm gap-2"
+						className="btn btn-ghost gap-2 btn-sm"
+						type="button"
+						variant="outline"
+						size="md"
 					>
 						<ArrowLeft className="w-4 h-4" />
 						Retour
-					</button>
+					</Button>
 				</div>
 			</div>
 
