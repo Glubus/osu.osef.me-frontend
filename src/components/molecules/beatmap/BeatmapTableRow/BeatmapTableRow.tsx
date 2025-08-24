@@ -1,8 +1,9 @@
 import type React from "react";
 import type { BeatmapCardProps } from "../../../../types/beatmap";
-import { getRatingColorClass } from "../../../../types/beatmap";
+import { getRatingColorClass, truncateDifficulty } from "../../../../types/beatmap";
 import Image from "../../../atom/Image/Image";
 import Badge from "../../../atom/Badge/Badge";
+import PatternBadges from "../PatternBadges/PatternBadges";
 
 const BeatmapTableRow: React.FC<BeatmapCardProps> = ({ beatmap, onClick }) => {
 	const { beatmap: map, beatmapset, msd } = beatmap;
@@ -33,7 +34,8 @@ const BeatmapTableRow: React.FC<BeatmapCardProps> = ({ beatmap, onClick }) => {
 				</div>
 			</td>
 			<td className="p-3">
-				<div className="flex flex-col">
+				<div className="flex flex-col gap-2">
+					{msd.main_pattern && <PatternBadges mainPattern={msd.main_pattern} />}
 					<div className="font-semibold text-base">
 						{beatmapset.artist} - {beatmapset.title}
 					</div>
@@ -43,7 +45,7 @@ const BeatmapTableRow: React.FC<BeatmapCardProps> = ({ beatmap, onClick }) => {
 				</div>
 			</td>
 			<td className="p-3">
-				<div className="text-sm font-medium">{map.difficulty}</div>
+				<div className="text-sm font-medium">{truncateDifficulty(map.difficulty)}</div>
 			</td>
 			<td className="p-3">
 				<Badge color={getOverallColor(msd.overall)}>{msd.overall}★</Badge>

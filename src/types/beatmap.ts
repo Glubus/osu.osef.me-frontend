@@ -1,3 +1,12 @@
+// Constantes
+export const DIFFICULTY_MAX_LENGTH = 40;
+
+// Helpers
+export const truncateDifficulty = (difficulty: string, maxLength: number = DIFFICULTY_MAX_LENGTH): string => {
+	if (difficulty.length <= maxLength) return difficulty;
+	return difficulty.substring(0, maxLength - 3) + "...";
+};
+
 export interface Beatmap {
 	id: number;
 	osu_id: number;
@@ -19,6 +28,7 @@ export interface Beatmapset {
 export interface MSD {
 	id: number;
 	overall: string;
+	main_pattern: string;
 }
 
 export interface BeatmapWithDetails {

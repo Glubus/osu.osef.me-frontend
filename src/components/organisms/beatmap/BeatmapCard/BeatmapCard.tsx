@@ -45,6 +45,7 @@ const BeatmapCard: React.FC<BeatmapCardProps> = ({ beatmap, onClick }) => {
 					<BeatmapHeaderInfo
 						overall={msd.overall}
 						difficulty={map.difficulty}
+						mainPattern={msd.main_pattern}
 					/>
 					<BeatmapFooterInfo
 						artist={beatmapset.artist || "Unknown Artist"}

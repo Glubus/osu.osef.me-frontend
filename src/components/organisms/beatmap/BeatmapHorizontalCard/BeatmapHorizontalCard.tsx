@@ -1,8 +1,9 @@
 import type React from "react";
 import type { BeatmapCardProps } from "../../../../types/beatmap";
-import { getRatingColorClass } from "../../../../types/beatmap";
+import { getRatingColorClass, truncateDifficulty } from "../../../../types/beatmap";
 import Image from "../../../atom/Image/Image";
 import Badge from "../../../atom/Badge/Badge";
+import PatternBadges from "../../../molecules/beatmap/PatternBadges/PatternBadges";
 
 const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({
 	beatmap,
@@ -52,14 +53,14 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({
 
 			{/* Contenu par-dessus l'image */}
 			<div className="relative h-full p-4 flex flex-col justify-between text-white">
-				{/* En-tête avec rating et difficulté */}
+				{/* En-tête avec difficulté */}
 				<div className="flex justify-between items-start">
-					<div className="flex flex-wrap gap-2">
-						<Badge color={getOverallColor(msd.overall)}>{msd.overall}★</Badge>
+					<div className="flex flex-col gap-2">
+						{msd.main_pattern && <PatternBadges mainPattern={msd.main_pattern} />}
 					</div>
 					<div className="text-right">
 						<div className="text-sm font-semibold text-primary-content">
-							{map.difficulty}
+							{truncateDifficulty(map.difficulty)}
 						</div>
 					</div>
 				</div>
@@ -73,6 +74,11 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({
 					<p className="text-xs text-base-content/80">
 						by {beatmapset.creator || "Unknown Creator"}
 					</p>
+				</div>
+
+				{/* Rating overall en bas à droite */}
+				<div className="absolute bottom-4 right-4">
+					<Badge color={getOverallColor(msd.overall)}>{msd.overall}★</Badge>
 				</div>
 			</div>
 		</div>
