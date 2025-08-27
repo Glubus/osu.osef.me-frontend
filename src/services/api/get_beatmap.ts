@@ -9,13 +9,44 @@ import { API_BASE_URL } from "@/types/global";
  * @returns Une promesse contenant les beatmaps filtrés
  */
 export async function getBeatmaps(filters: Filters): Promise<BeatmapFiltersResponse> {
+  const debugLog = (message: string, data?: any) => {
+    console.log(`[API getBeatmaps] ${message}`, data || '');
+  };
+
   try {
+    debugLog('Making API request with filters:', filters);
+    
+    const startTime = Date.now();
     const response = await axios.get<BeatmapFiltersResponse>(`${API_BASE_URL}/api/beatmap`, {
         params: filters, // Les filtres sont envoyés en query string
+        timeout: 10000, // 10 secondes timeout
       });
+    
+    const endTime = Date.now();
+    debugLog('API response received', { 
+      duration: `${endTime - startTime}ms`,
+      beatmapsCount: response.data.beatmaps?.length || 0,
+      totalPages: response.data.total_pages,
+      currentPage: response.data.current_page
+    });
+    console.log(response.data);
     return response.data;
   } catch (error: any) {
-    console.error("Erreur lors de la récupération des beatmaps :", error);
-    throw error;
+    debugLog('API request failed:', error);
+    
+    if (error.code === 'ECONNABORTED') {
+      throw new Error('Request timeout - server took too long to respond');
+    }
+    
+    if (error.response) {
+      // Server responded with error status
+      throw new Error(`Server error: ${error.response.status} - ${error.response.data?.message || 'Unknown error'}`);
+    } else if (error.request) {
+      // Network error
+      throw new Error('Network error - unable to reach the server');
+    } else {
+      // Other error
+      throw new Error(`Request error: ${error.message}`);
+    }
   }
 }

@@ -14,40 +14,97 @@ const BeatmapList: React.FC = () => {
   const { beatmaps, loading, loadingMore, error, hasMore, loadMore, loadFirstPage } = useBeatmapList(filters);
   const observerRef = useRef<HTMLDivElement>(null);
   const isInitialLoad = useRef(true);
+  const observerRef2 = useRef<IntersectionObserver | null>(null);
+  const loadMoreTimeoutRef = useRef<number | null>(null);
+  const hasMoreRef = useRef(hasMore);
+  const loadingRef = useRef(loading);
+  const loadingMoreRef = useRef(loadingMore);
+
+  // Update refs when values change
+  hasMoreRef.current = hasMore;
+  loadingRef.current = loading;
+  loadingMoreRef.current = loadingMore;
+
+  // Debug logging
+  const debugLog = (message: string, data?: any) => {
+    console.log(`[BeatmapList Component] ${message}`, data || '');
+  };
+
+  // Debounced load more function
+  const debouncedLoadMore = useCallback(() => {
+    if (loadMoreTimeoutRef.current) {
+      clearTimeout(loadMoreTimeoutRef.current);
+    }
+    
+    loadMoreTimeoutRef.current = setTimeout(() => {
+      debugLog('Debounced loadMore triggered');
+      loadMore();
+    }, 100); // 100ms debounce
+  }, [loadMore]);
 
   // Intersection Observer pour détecter quand on arrive en bas
   useEffect(() => {
+    debugLog('Setting up Intersection Observer');
+    
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loading && !loadingMore) {
-          loadMore();
+        const entry = entries[0];
+        debugLog('Intersection Observer triggered', { 
+          isIntersecting: entry.isIntersecting,
+          hasMore: hasMoreRef.current,
+          loading: loadingRef.current,
+          loadingMore: loadingMoreRef.current
+        });
+        
+        if (entry.isIntersecting && hasMoreRef.current && !loadingRef.current && !loadingMoreRef.current) {
+          debouncedLoadMore();
         }
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.1,
+        rootMargin: '100px' // Start loading 100px before reaching the bottom
+      }
     );
+
+    observerRef2.current = observer;
 
     if (observerRef.current) {
       observer.observe(observerRef.current);
+      debugLog('Observer attached to element');
     }
 
-    return () => observer.disconnect();
-  }, [hasMore, loading, loadingMore, loadMore]);
+    return () => {
+      debugLog('Cleaning up Intersection Observer');
+      observer.disconnect();
+      if (loadMoreTimeoutRef.current) {
+        clearTimeout(loadMoreTimeoutRef.current);
+      }
+    };
+  }, [debouncedLoadMore]); // Only depend on debouncedLoadMore
 
   // Load first page only once when component mounts
   useEffect(() => {
     if (isInitialLoad.current) {
+      debugLog('Component mounted, loading first page');
       loadFirstPage();
       isInitialLoad.current = false;
     }
   }, [loadFirstPage]);
 
-  const handleFiltersChange = (newFilters: Filters) => {
+  const handleFiltersChange = useCallback((newFilters: Filters) => {
+    debugLog('Filters changed', newFilters);
+    
+    // Cancel any pending load more
+    if (loadMoreTimeoutRef.current) {
+      clearTimeout(loadMoreTimeoutRef.current);
+    }
+    
     setFilters({
       ...newFilters,
       page: 1, // Reset to first page when filters change
     });
     isInitialLoad.current = true; // Reset initial load flag
-  };
+  }, []);
 
   if (error) {
     return (

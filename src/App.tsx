@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import BeatmapsetRedirect from './pages/BeatmapsetRedirect';
 import BeatmapView from './pages/BeatmapView';
+import { Roadmap } from './pages/Roadmap';
 import Navbar from './components/organisms/Navbar/Navbar';
 import BeatmapList from './components/organisms/BeatmapList/BeatmapList';
 
@@ -13,6 +14,7 @@ const App = () => {
         <main className="content">
           <Routes>
             <Route path="/" element={<BeatmapList />} />
+            <Route path="/roadmap" element={<Roadmap />} />
             <Route path="beatmapsets/:beatmapsetId" element={<BeatmapsetRedirect />} />
             <Route path="beatmapsets/:beatmapsetId/:beatmapId" element={<BeatmapView />} />
           </Routes>

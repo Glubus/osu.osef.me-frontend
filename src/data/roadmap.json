@@ -1,0 +1,113 @@
+{
+  "roadmap": [
+    {
+      "id": 1,
+      "title": "Basic Beatmap Display",
+      "description": "Display basic beatmap information with cover art and metadata",
+      "status": "finished",
+      "date": "2025-08-20",
+      "category": "core",
+      "priority": "high"
+    },
+    {
+      "id": 2,
+      "title": "Beatmap Search & Filtering",
+      "description": "Implement search functionality and filtering options for beatmaps",
+      "status": "finished",
+      "date": "2025-08-20",
+      "category": "core",
+      "priority": "high"
+    },
+    {
+      "id": 3,
+      "title": "MSD Charts Integration",
+      "description": "Add MSD (Etterna Ratings) graphs",
+      "status": "finished",
+      "date": "2025-08-21",
+      "category": "features",
+      "priority": "medium"
+    },
+    {
+      "id": 4,
+      "title": "Advanced Filtering",
+      "description": "Add advanced filtering options including difficulty range.",
+      "status": "finished",
+      "date": "2025-08-27",
+      "category": "features",
+      "priority": "high"
+    },
+    {
+      "id": 5,
+      "title": "Beatmap Download System",
+      "description": "Add direct beatmap download functionality using catboy mirror",
+      "status": "finished",
+      "date": "2025-08-27",
+      "category": "features",
+      "priority": "high"
+    },
+
+    {
+      "id": 6,
+      "title": "Switch between DaisyUI style",
+      "description": "Switch between DaisyUI style",
+      "status": "in-progress",
+      "date": "2025-08-30",
+      "category": "ui",
+      "priority": "low"
+    },
+    {
+      "id": 7,
+      "title": "Add Back Beatmap Visualizer",
+      "description": "Add a beatmap visualizer to the beatmap page",
+      "status": "in-progress",
+      "date": "2025-08-30",
+      "category": "features",
+      "priority": "high"
+    },
+    {
+      "id": 8,
+      "title": "Score Submission System",
+      "description": "Add a score submission system with a leaderboard for unranked bancho beatmaps",
+      "status": "planned",
+      "date": "2025-09-30",
+      "category": "features",
+      "priority": "high"
+      },
+      {
+        "id": 9,
+        "title": "Popular skin sharing system",
+        "description": "Add a popular skin sharing system",
+        "status": "planned",
+        "date": "2025-10-30",
+        "category": "features",
+        "priority": "low"
+      },
+      {
+        "id": 10,
+        "title": "Tools sharing system",
+        "description": "Add a way to share tools",
+        "status": "planned",
+        "date": "2025-10-30",
+        "category": "features",
+        "priority": "low"
+      },
+      {
+        "id": 11,
+        "title": "Etterna pack to Osu! pack converter",
+        "description": "Add a way to convert Etterna packs to Osu! packs",
+        "status": "planned",
+        "date": "2025-10-30",
+        "category": "features",
+        "priority": "low"
+      },
+      {
+        "id": 12,
+        "title": "Rank unsubmitted beatmaps (etterna map or removed beatmap)",
+        "description": "Add a way to rank unsubmitted beatmaps (etterna map or removed beatmap)",
+        "status": "planned",
+        "date": "2025-10-30",
+        "category": "features",
+        "priority": "high"
+      }
+  ]
+}

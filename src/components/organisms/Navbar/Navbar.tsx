@@ -19,6 +19,14 @@ const Navbar: React.FC = () => {
 
           {/* Navigation */}
           <div className="flex items-center space-x-4">
+            <Button
+              onClick={() => navigate("/roadmap")}
+              color="secondary"
+              style="outline"
+              size="md"
+            >
+              Roadmap
+            </Button>
             {!isHomePage && (
               <Button
                 onClick={() => navigate("/")}
