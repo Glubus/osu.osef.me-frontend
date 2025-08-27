@@ -1,31 +1,25 @@
-import { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import BeatmapBrowser from "./pages/BeatmapBrowser";
-import BeatmapDetail from "./pages/BeatmapDetail";
-import "./App.css";
+import './App.css';
+import BeatmapListWithFilters from './components/organisms/BeatmapListWithFilters/BeatmapListWithFilters';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import BeatmapsetRedirect from './pages/BeatmapsetRedirect';
+import BeatmapView from './pages/BeatmapView';
+import Navbar from './components/organisms/Navbar/Navbar';
 
 const App = () => {
-	useEffect(() => {
-		document.title = "osef.me";
-	}, []);
-
-	return (
-		<Router>
-			<div className="App">
-				<Routes>
-					<Route path="/" element={<BeatmapBrowser />} />
-					<Route
-						path="/beatmapsets/:beatmapsetOsuId/:beatmapOsuId"
-						element={<BeatmapDetail />}
-					/>
-					<Route
-						path="/beatmapsets/:beatmapsetOsuId"
-						element={<BeatmapDetail />}
-					/>
-				</Routes>
-			</div>
-		</Router>
-	);
+  return (
+    <BrowserRouter>
+      <div className="min-h-screen bg-gray-900">
+        <Navbar />
+        <main className="content">
+          <Routes>
+            <Route path="/" element={<BeatmapListWithFilters />} />
+            <Route path="beatmapsets/:beatmapsetId" element={<BeatmapsetRedirect />} />
+            <Route path="beatmapsets/:beatmapsetId/:beatmapId" element={<BeatmapView />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
+  );
 };
 
 export default App;
