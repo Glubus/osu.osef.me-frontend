@@ -127,7 +127,7 @@ export const useBeatmapList = (filters: Filters) => {
       debugLog(`loadMore called, incrementing page from ${currentPageRef.current} to ${nextPage}`);
       setCurrentPage(nextPage);
       // Load immediately
-      loadBeatmaps(nextPage);
+      setTimeout(() => loadBeatmaps(nextPage), 0);
     } else {
       debugLog('loadMore blocked:', { 
         loading: loadingRef.current, 

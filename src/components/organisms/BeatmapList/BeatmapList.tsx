@@ -12,10 +12,8 @@ const BeatmapList: React.FC = () => {
   });
 
   const { beatmaps, loading, loadingMore, error, hasMore, loadMore, loadFirstPage } = useBeatmapList(filters);
-  const observerRef = useRef<HTMLDivElement>(null);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const isInitialLoad = useRef(true);
-  const observerRef2 = useRef<IntersectionObserver | null>(null);
-  const loadMoreTimeoutRef = useRef<number | null>(null);
   const hasMoreRef = useRef(hasMore);
   const loadingRef = useRef(loading);
   const loadingMoreRef = useRef(loadingMore);
@@ -30,79 +28,66 @@ const BeatmapList: React.FC = () => {
     console.log(`[BeatmapList Component] ${message}`, data || '');
   };
 
-  // Debounced load more function
-  const debouncedLoadMore = useCallback(() => {
-    if (loadMoreTimeoutRef.current) {
-      clearTimeout(loadMoreTimeoutRef.current);
-    }
-    
-    loadMoreTimeoutRef.current = setTimeout(() => {
-      debugLog('Debounced loadMore triggered');
-      loadMore();
-    }, 100); // 100ms debounce
-  }, [loadMore]);
-
-  // Intersection Observer pour détecter quand on arrive en bas
+  // Scroll listener pour détecter quand on arrive en bas
   useEffect(() => {
-    debugLog('Setting up Intersection Observer');
+    debugLog('Setting up scroll listener');
     
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        debugLog('Intersection Observer triggered', { 
-          isIntersecting: entry.isIntersecting,
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      
+      // Si on est à moins de 200px du bas
+      if (scrollTop + windowHeight >= documentHeight - 200) {
+        debugLog('Near bottom detected', { 
+          scrollTop, 
+          windowHeight, 
+          documentHeight,
           hasMore: hasMoreRef.current,
           loading: loadingRef.current,
           loadingMore: loadingMoreRef.current
         });
         
-        if (entry.isIntersecting && hasMoreRef.current && !loadingRef.current && !loadingMoreRef.current) {
-          debouncedLoadMore();
+        if (hasMoreRef.current && !loadingRef.current && !loadingMoreRef.current) {
+          loadMore();
         }
-      },
-      { 
-        threshold: 0.1,
-        rootMargin: '100px' // Start loading 100px before reaching the bottom
-      }
-    );
-
-    observerRef2.current = observer;
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
-      debugLog('Observer attached to element');
-    }
-
-    return () => {
-      debugLog('Cleaning up Intersection Observer');
-      observer.disconnect();
-      if (loadMoreTimeoutRef.current) {
-        clearTimeout(loadMoreTimeoutRef.current);
       }
     };
-  }, [debouncedLoadMore]); // Only depend on debouncedLoadMore
+
+    window.addEventListener('scroll', handleScroll);
+    debugLog('Scroll listener attached');
+
+    return () => {
+      debugLog('Cleaning up scroll listener');
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [loadMore]);
 
   // Load first page only once when component mounts
   useEffect(() => {
     if (isInitialLoad.current) {
       debugLog('Component mounted, loading first page');
+      setIsInitialLoading(true);
       loadFirstPage();
       isInitialLoad.current = false;
     }
   }, [loadFirstPage]);
 
+  // Hide initial loading when we have data
+  useEffect(() => {
+    if (beatmaps.length > 0 && isInitialLoading) {
+      setIsInitialLoading(false);
+    }
+  }, [beatmaps.length, isInitialLoading]);
+
   const handleFiltersChange = useCallback((newFilters: Filters) => {
     debugLog('Filters changed', newFilters);
-    
-    // Cancel any pending load more
-    if (loadMoreTimeoutRef.current) {
-      clearTimeout(loadMoreTimeoutRef.current);
-    }
     
     setFilters({
       ...newFilters,
       page: 1, // Reset to first page when filters change
     });
+    setIsInitialLoading(true); // Show loading for filter changes
     isInitialLoad.current = true; // Reset initial load flag
   }, []);
 
@@ -121,7 +106,7 @@ const BeatmapList: React.FC = () => {
     <div className="p-4">
       <FilterSection filters={filters} onFiltersChange={handleFiltersChange} />
       
-      {loading && beatmaps.length === 0 ? (
+      {isInitialLoading ? (
         <div className="text-center py-8">
           <p>Loading beatmaps...</p>
         </div>
@@ -140,8 +125,8 @@ const BeatmapList: React.FC = () => {
             </div>
           )}
           
-          {/* Intersection observer target */}
-          <div ref={observerRef} className="h-4" />
+          {/* Scroll target - no longer needed but keeping for now */}
+          <div className="h-4" />
           
           {/* No more items indicator */}
           {!hasMore && beatmaps.length > 0 && (
