@@ -16,3 +16,6 @@ dist/
 .idea
 
 *.sh
+
+# Environment variables
+.env
