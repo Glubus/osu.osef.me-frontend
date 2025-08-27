@@ -31,7 +31,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({ filters, onFiltersChange 
     <div className="bg-gray-800 rounded-lg p-4 mb-6">
              <h2 className="text-lg font-semibold mb-4">Filters</h2>
       
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
          {/* Search term */}
          <Input
            id="search-term"
@@ -41,25 +41,25 @@ const FilterSection: React.FC<FilterSectionProps> = ({ filters, onFiltersChange 
            label="Search"
          />
 
-         {/* Overall range */}
-         <div className="flex gap-2">
-           <Input
-             id="overall-min"
-             value={filters.overall_min?.toString() || ""}
-             onChange={(value) => updateFilter("overall_min", value ? Number(value) : undefined)}
-             placeholder="Min"
-             label="Overall min"
-             type="number"
-           />
-           <Input
-             id="overall-max"
-             value={filters.overall_max?.toString() || ""}
-             onChange={(value) => updateFilter("overall_max", value ? Number(value) : undefined)}
-             placeholder="Max"
-             label="Overall max"
-             type="number"
-           />
-         </div>
+         {/* Overall min */}
+         <Input
+           id="overall-min"
+           value={filters.overall_min?.toString() || ""}
+           onChange={(value) => updateFilter("overall_min", value ? Number(value) : undefined)}
+           placeholder="Min"
+           label="Overall min"
+           type="number"
+         />
+
+         {/* Overall max */}
+         <Input
+           id="overall-max"
+           value={filters.overall_max?.toString() || ""}
+           onChange={(value) => updateFilter("overall_max", value ? Number(value) : undefined)}
+           placeholder="Max"
+           label="Overall max"
+           type="number"
+         />
 
          {/* Pattern selection */}
          <Select
@@ -70,27 +70,33 @@ const FilterSection: React.FC<FilterSectionProps> = ({ filters, onFiltersChange 
            label="Pattern"
          />
 
-         {/* Pattern range (only show if pattern is selected) */}
+         {/* Pattern min (only show if pattern is selected) */}
          {filters.selected_pattern && (
-           <div className="flex gap-2">
-             <Input
-               id="pattern-min"
-               value={filters.pattern_min?.toString() || ""}
-               onChange={(value) => updateFilter("pattern_min", value ? Number(value) : undefined)}
-               placeholder="Min"
-               label="Min"
-               type="number"
-             />
-             <Input
-               id="pattern-max"
-               value={filters.pattern_max?.toString() || ""}
-               onChange={(value) => updateFilter("pattern_max", value ? Number(value) : undefined)}
-               placeholder="Max"
-               label="Max"
-               type="number"
-             />
-           </div>
+           <Input
+             id="pattern-min"
+             value={filters.pattern_min?.toString() || ""}
+             onChange={(value) => updateFilter("pattern_min", value ? Number(value) : undefined)}
+             placeholder="Min"
+             label="Pattern min"
+             type="number"
+           />
          )}
+
+         {/* Pattern max (only show if pattern is selected) */}
+         {filters.selected_pattern && (
+           <Input
+             id="pattern-max"
+             value={filters.pattern_max?.toString() || ""}
+             onChange={(value) => updateFilter("pattern_max", value ? Number(value) : undefined)}
+             placeholder="Max"
+             label="Pattern max"
+             type="number"
+           />
+         )}
+
+         {/* Empty space when pattern is not selected */}
+         {!filters.selected_pattern && <div></div>}
+         {!filters.selected_pattern && <div></div>}
        </div>
     </div>
   );
