@@ -1,9 +1,9 @@
 import './App.css';
-import BeatmapListWithFilters from './components/organisms/BeatmapListWithFilters/BeatmapListWithFilters';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import BeatmapsetRedirect from './pages/BeatmapsetRedirect';
 import BeatmapView from './pages/BeatmapView';
 import Navbar from './components/organisms/Navbar/Navbar';
+import BeatmapList from './components/organisms/BeatmapList/BeatmapList';
 
 const App = () => {
   return (
@@ -12,7 +12,7 @@ const App = () => {
         <Navbar />
         <main className="content">
           <Routes>
-            <Route path="/" element={<BeatmapListWithFilters />} />
+            <Route path="/" element={<BeatmapList />} />
             <Route path="beatmapsets/:beatmapsetId" element={<BeatmapsetRedirect />} />
             <Route path="beatmapsets/:beatmapsetId/:beatmapId" element={<BeatmapView />} />
           </Routes>
