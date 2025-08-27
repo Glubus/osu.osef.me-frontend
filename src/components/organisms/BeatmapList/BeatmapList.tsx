@@ -8,7 +8,7 @@ import { useBeatmapList } from "@/hooks/useBeatmapList";
 const BeatmapList: React.FC = () => {
   const [filters, setFilters] = useState<Filters>({
     page: 1,
-    per_page: 10,
+    per_page: 100,
   });
 
   const { beatmaps, loading, loadingMore, error, hasMore, loadMore, loadFirstPage } = useBeatmapList(filters);

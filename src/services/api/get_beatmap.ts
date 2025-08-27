@@ -16,20 +16,11 @@ export async function getBeatmaps(filters: Filters): Promise<BeatmapFiltersRespo
   try {
     debugLog('Making API request with filters:', filters);
     
-    const startTime = Date.now();
     const response = await axios.get<BeatmapFiltersResponse>(`${API_BASE_URL}/api/beatmap`, {
         params: filters, // Les filtres sont envoyés en query string
         timeout: 10000, // 10 secondes timeout
       });
     
-    const endTime = Date.now();
-    debugLog('API response received', { 
-      duration: `${endTime - startTime}ms`,
-      beatmapsCount: response.data.beatmaps?.length || 0,
-      totalPages: response.data.total_pages,
-      currentPage: response.data.current_page
-    });
-    console.log(response.data);
     return response.data;
   } catch (error: any) {
     debugLog('API request failed:', error);

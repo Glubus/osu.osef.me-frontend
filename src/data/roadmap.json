@@ -38,6 +38,15 @@
     },
     {
       "id": 5,
+      "title": "Fast swapping using domain",
+      "description": "Using  domain to fast check beatmap with replacing osu.ppy.sh to osu.ppy.ovh",
+      "status": "finished",
+      "date": "2025-08-27",
+      "category": "features",
+      "priority": "high"
+    },
+    {
+      "id": 6,
       "title": "Beatmap Download System",
       "description": "Add direct beatmap download functionality using catboy mirror",
       "status": "finished",
@@ -47,7 +56,7 @@
     },
 
     {
-      "id": 6,
+      "id": 7,
       "title": "Switch between DaisyUI style",
       "description": "Switch between DaisyUI style",
       "status": "in-progress",
@@ -56,7 +65,7 @@
       "priority": "low"
     },
     {
-      "id": 7,
+      "id": 8,
       "title": "Add Back Beatmap Visualizer",
       "description": "Add a beatmap visualizer to the beatmap page",
       "status": "in-progress",
@@ -65,7 +74,7 @@
       "priority": "high"
     },
     {
-      "id": 8,
+      "id": 9,
       "title": "Score Submission System",
       "description": "Add a score submission system with a leaderboard for unranked bancho beatmaps",
       "status": "planned",
@@ -74,7 +83,7 @@
       "priority": "high"
       },
       {
-        "id": 9,
+        "id": 10,
         "title": "Popular skin sharing system",
         "description": "Add a popular skin sharing system",
         "status": "planned",
@@ -83,7 +92,7 @@
         "priority": "low"
       },
       {
-        "id": 10,
+        "id": 11,
         "title": "Tools sharing system",
         "description": "Add a way to share tools",
         "status": "planned",
@@ -92,7 +101,7 @@
         "priority": "low"
       },
       {
-        "id": 11,
+        "id": 12,
         "title": "Etterna pack to Osu! pack converter",
         "description": "Add a way to convert Etterna packs to Osu! packs",
         "status": "planned",
@@ -101,7 +110,7 @@
         "priority": "low"
       },
       {
-        "id": 12,
+        "id": 13,
         "title": "Rank unsubmitted beatmaps (etterna map or removed beatmap)",
         "description": "Add a way to rank unsubmitted beatmaps (etterna map or removed beatmap)",
         "status": "planned",
