@@ -20,6 +20,12 @@ export interface Filters {
     per_page: number;
     total_pages: number;
   }
+
+  // ---------- Types pour la réponse aléatoire ----------
+  export interface BeatmapRandomResponse {
+    beatmaps: BeatmapsetCompleteShort[];
+    count: number;
+  }
   
   // ---------- Beatmapset complet court ----------
   export interface BeatmapsetCompleteShort {

@@ -27,6 +27,14 @@ const Navbar: React.FC = () => {
             >
               Roadmap
             </Button>
+            <Button
+              onClick={() => navigate("/random")}
+              color="secondary"
+              style="outline"
+              size="md"
+            >
+              🎲 Random
+            </Button>
             {!isHomePage && (
               <Button
                 onClick={() => navigate("/")}
