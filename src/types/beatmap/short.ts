@@ -62,6 +62,6 @@ export interface Filters {
   export interface MSDShort {
     id?: number;
     overall?: number;
-    main_pattern?: string;
+    main_pattern?: string | string[];
   }
   

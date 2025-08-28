@@ -5,6 +5,39 @@ import { Image } from "@/components/atoms/Image/Image";
 import Badge from "@/components/atoms/Badge/Badge";
 import { getRatingColor } from "@/utils/getRatingColor";
 
+// Fonction utilitaire pour parser les main_patterns
+const parseMainPatterns = (mainPattern: string | string[] | undefined): string[] => {
+  if (!mainPattern) return [];
+  
+  if (Array.isArray(mainPattern)) {
+    return mainPattern;
+  }
+  
+  // Si c'est une string, essayer de la parser comme JSON
+  try {
+    const parsed = JSON.parse(mainPattern);
+    return Array.isArray(parsed) ? parsed : [mainPattern];
+  } catch {
+    // Si le parsing JSON échoue, traiter comme une string simple
+    return [mainPattern];
+  }
+};
+
+// Fonction pour convertir les patterns en raccourcis
+const getPatternShortcut = (pattern: string): string => {
+  const shortcuts: Record<string, string> = {
+    'jumpstream': 'JS',
+    'handstream': 'HS',
+    'jackspeed': 'SJ',
+    'stamina': 'Stam',
+    'stream': 'Stream',
+    'chordjack': 'CJ',
+    'technical': 'Tech'
+  };
+  
+  return shortcuts[pattern.toLowerCase()] || pattern;
+};
+
 export type BeatmapCardProps = {
   beatmapset: BeatmapsetCompleteShort;
 };
@@ -41,6 +74,14 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({ beatmapset }) => {
   const displayedMaps = sortedMaps.slice(0, 5);
   const remainingCount = sortedMaps.length - 5;
 
+  // Collecter tous les patterns uniques
+  const allPatterns = new Set<string>();
+  sortedMaps.forEach(map => {
+    const patterns = parseMainPatterns(map.msd?.main_pattern);
+    patterns.forEach(pattern => allPatterns.add(pattern));
+  });
+  const uniquePatterns = Array.from(allPatterns).slice(0, 3); // Limiter à 3 patterns max
+
   return (
     <div
       className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer group h-32 overflow-hidden relative"
@@ -56,29 +97,48 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({ beatmapset }) => {
         <div className="absolute inset-0 bg-black/70" />
       </div>
 
-      {/* Contenu */}
-      <div className="relative h-full p-4 flex flex-col justify-between text-white">
-        {/* Bubbles pour chaque beatmap */}
-        <div className="flex gap-2">
-          {displayedMaps.map((m, i) => {
-            const overall = Number(m.msd?.overall ?? 0);
-            return (
-              <Badge
-                key={i}
-                color={getRatingColor(overall)}
-                title={m.beatmap.difficulty}
-                outline={true}
-              >
-                {overall.toFixed(2)}
-              </Badge>
-            );
-          })}
-          {remainingCount > 0 && (
-            <Badge color="gray" title={`${remainingCount} difficultés supplémentaires`}>
-              +{remainingCount}
-            </Badge>
-          )}
-        </div>
+                           {/* Contenu */}
+        <div className="relative h-full p-4 flex flex-col justify-between text-white">
+          {/* Container commun pour patterns et ratings */}
+          <div className="flex justify-between items-start">
+            {/* Bubbles pour chaque beatmap - à gauche */}
+            <div className="flex gap-2">
+              {displayedMaps.map((m, i) => {
+                const overall = Number(m.msd?.overall ?? 0);
+                return (
+                  <Badge
+                    key={i}
+                    color={getRatingColor(overall)}
+                    title={m.beatmap.difficulty}
+                    outline={true}
+                  >
+                    {overall.toFixed(2)}
+                  </Badge>
+                );
+              })}
+              {remainingCount > 0 && (
+                <Badge color="gray" title={`${remainingCount} difficultés supplémentaires`}>
+                  +{remainingCount}
+                </Badge>
+              )}
+            </div>
+
+            {/* Patterns badges - à droite */}
+            {uniquePatterns.length > 0 && (
+              <div className="flex gap-1">
+                {uniquePatterns.map((pattern, i) => (
+                  <Badge
+                    key={i}
+                    color="blue"
+                    title={`Pattern: ${pattern}`}
+                    outline={true}
+                  >
+                    {getPatternShortcut(pattern)}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
 
         {/* Infos principales */}
         <div className="flex-1 flex flex-col justify-center mt-2">
