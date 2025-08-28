@@ -14,7 +14,6 @@ export const useBeatmapList = (filters: Filters) => {
   // Refs pour éviter les appels multiples
   const loadingRef = useRef(false);
   const loadingMoreRef = useRef(false);
-  const abortControllerRef = useRef<AbortController | null>(null);
   const filtersRef = useRef(filters);
   const currentPageRef = useRef(currentPage);
 
@@ -31,11 +30,6 @@ export const useBeatmapList = (filters: Filters) => {
   useEffect(() => {
     debugLog('Filters changed, resetting state', filters);
     
-    // Cancel any ongoing request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    
     setBeatmaps([]);
     setCurrentPage(1);
     setHasMore(true);
@@ -44,6 +38,12 @@ export const useBeatmapList = (filters: Filters) => {
     setLoadingMore(false);
     loadingRef.current = false;
     loadingMoreRef.current = false;
+    
+    // Reload first page with new filters
+    setTimeout(() => {
+      debugLog('Reloading with new filters');
+      loadBeatmaps(1);
+    }, 0);
   }, [filters.search_term, filters.overall_min, filters.overall_max, filters.selected_pattern, filters.pattern_min, filters.pattern_max]);
 
   const loadBeatmaps = useCallback(async (page?: number) => {
@@ -56,14 +56,6 @@ export const useBeatmapList = (filters: Filters) => {
     }
 
     try {
-      // Cancel any ongoing request
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      
-      // Create new abort controller
-      abortControllerRef.current = new AbortController();
-      
       if (targetPage === 1) {
         setLoading(true);
         loadingRef.current = true;
@@ -84,12 +76,6 @@ export const useBeatmapList = (filters: Filters) => {
       
       const data = await getBeatmaps(currentFilters);
       
-      // Check if request was cancelled
-      if (abortControllerRef.current?.signal.aborted) {
-        debugLog('Request was cancelled');
-        return;
-      }
-      
       debugLog('Received data:', { 
         beatmapsCount: data.beatmaps.length, 
         totalPages: data.total_pages,
@@ -104,12 +90,6 @@ export const useBeatmapList = (filters: Filters) => {
       
       setHasMore(targetPage < data.total_pages);
     } catch (err: any) {
-      // Don't set error if request was cancelled
-      if (err.name === 'AbortError') {
-        debugLog('Request was aborted');
-        return;
-      }
-      
       setError("Error loading beatmaps");
       console.error("BeatmapList error:", err);
     } finally {

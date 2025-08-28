@@ -16,10 +16,13 @@ export async function getBeatmaps(filters: Filters): Promise<BeatmapFiltersRespo
   try {
     debugLog('Making API request with filters:', filters);
     
+    console.log('URL',`${API_BASE_URL}/api/beatmap`);
+    console.log('filters', filters);
     const response = await axios.get<BeatmapFiltersResponse>(`${API_BASE_URL}/api/beatmap`, {
         params: filters, // Les filtres sont envoyés en query string
         timeout: 10000, // 10 secondes timeout
       });
+    console.log('response.data', response.data);
     
     return response.data;
   } catch (error: any) {
