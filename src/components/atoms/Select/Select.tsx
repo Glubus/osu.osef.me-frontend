@@ -27,7 +27,7 @@ const Select: React.FC<SelectProps> = ({
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={id} className="text-sm font-medium">
+        <label htmlFor={id} className="text-sm font-medium text-base-content">
           {label}
         </label>
       )}
@@ -36,7 +36,7 @@ const Select: React.FC<SelectProps> = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className={`bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 focus:outline-none ${className}`}
+        className={`select select-bordered w-full bg-base-100 text-base-content border-base-300 focus:border-primary focus:outline-none ${className}`}
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>

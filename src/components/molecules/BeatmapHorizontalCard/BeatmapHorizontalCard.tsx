@@ -124,7 +124,7 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({ beatmapset }) => {
           alt={`${beatmapset.beatmapset.artist || "Unknown Artist"} - ${beatmapset.beatmapset.title || "Unknown Title"}`}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute inset-0 bg-black/70" />
+        <div className="absolute inset-0 bg-black/60" />
       </div>
 
       {/* Bouton de téléchargement qui slide depuis la droite */}
