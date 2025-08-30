@@ -2,7 +2,7 @@ import type React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { Filters } from "@/types/beatmap/short";
 import FilterSection from "@/components/molecules/FilterSection/FilterSection";
-import BeatmapHorizontalCard from "@/components/molecules/BeatmapHorizontalCard/BeatmapHorizontalCard";
+import BeatmapGrid from "@/components/molecules/BeatmapGrid/BeatmapGrid";
 import { useBeatmapList } from "@/hooks/useBeatmapList";
 import { useFilters } from "@/hooks/useFilters";
 
@@ -103,53 +103,24 @@ const BeatmapList: React.FC = () => {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-base-content">Beatmaps</h1>
-        <button
-          onClick={resetFilters}
-          className="btn btn-outline btn-sm"
-          title="Reset all filters"
-        >
-          Reset Filters
-        </button>
       </div>
       
-      <FilterSection filters={filters} onFiltersChange={handleFiltersChange} />
+      <FilterSection 
+        filters={filters} 
+        onFiltersChange={handleFiltersChange} 
+        onReset={resetFilters}
+      />
       
-      {isInitialLoading ? (
-        <div className="text-center py-8">
-          <p>Loading beatmaps...</p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {beatmaps.map((beatmapset, i) => (
-              <BeatmapHorizontalCard key={`${beatmapset.beatmapset?.id || i}-${i}`} beatmapset={beatmapset} />
-            ))}
-          </div>
-          
-          {/* Loading indicator for more items */}
-          {loadingMore && (
-            <div className="text-center py-4">
-              <p>Loading more beatmaps...</p>
-            </div>
-          )}
-          
-          {/* Scroll target - no longer needed but keeping for now */}
-          <div className="h-4" />
-          
-          {/* No more items indicator */}
-          {!hasMore && beatmaps.length > 0 && (
-            <div className="text-center py-4">
-              <p className="text-gray-400">No more beatmaps to load.</p>
-            </div>
-          )}
-        </>
-      )}
-      
-      {!loading && beatmaps.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-gray-400">No beatmaps found with these filters.</p>
-        </div>
-      )}
+      <BeatmapGrid
+        beatmaps={beatmaps}
+        loading={isInitialLoading}
+        loadingMore={loadingMore}
+        hasMore={hasMore}
+        loadingMessage="Loading beatmaps..."
+        loadingMoreMessage="Loading more beatmaps..."
+        noMoreMessage="No more beatmaps to load."
+        emptyMessage="No beatmaps found with these filters."
+      />
     </div>
   );
 };

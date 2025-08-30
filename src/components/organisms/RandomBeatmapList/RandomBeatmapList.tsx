@@ -2,7 +2,7 @@ import type React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { Filters } from "@/types/beatmap/short";
 import FilterSection from "@/components/molecules/FilterSection/FilterSection";
-import BeatmapHorizontalCard from "@/components/molecules/BeatmapHorizontalCard/BeatmapHorizontalCard";
+import BeatmapGrid from "@/components/molecules/BeatmapGrid/BeatmapGrid";
 import Button from "@/components/atoms/Button/Button";
 import { useRandomBeatmaps } from "@/hooks/useRandomBeatmaps";
 import { useFilters } from "@/hooks/useFilters";
@@ -80,16 +80,13 @@ const RandomBeatmapList: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-base-content">Random Beatmaps</h1>
-        <button
-          onClick={resetFilters}
-          className="btn btn-outline btn-sm"
-          title="Reset all filters"
-        >
-          Reset Filters
-        </button>
       </div>
       
-      <FilterSection filters={{ ...filters, page: 1, per_page: 100 }} onFiltersChange={handleFiltersChange} />
+      <FilterSection 
+        filters={{ ...filters, page: 1, per_page: 100 }} 
+        onFiltersChange={handleFiltersChange} 
+        onReset={resetFilters}
+      />
       
       {/* Reroll Button */}
       <div className="flex justify-center mb-6">
@@ -104,26 +101,12 @@ const RandomBeatmapList: React.FC = () => {
         </Button>
       </div>
       
-      {isInitialLoading ? (
-        <div className="text-center py-8">
-          <p>Loading random beatmaps...</p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {beatmaps.map((beatmapset, i) => (
-              <BeatmapHorizontalCard key={`${beatmapset.beatmapset?.id || i}-${i}`} beatmapset={beatmapset} />
-            ))}
-          </div>
-          
-          {/* No beatmaps found */}
-          {!loading && beatmaps.length === 0 && (
-            <div className="text-center py-8">
-              <p className="text-gray-400">No beatmaps found with these filters.</p>
-            </div>
-          )}
-        </>
-      )}
+      <BeatmapGrid
+        beatmaps={beatmaps}
+        loading={isInitialLoading}
+        loadingMessage="Loading random beatmaps..."
+        emptyMessage="No beatmaps found with these filters."
+      />
     </div>
   );
 };

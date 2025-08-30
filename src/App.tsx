@@ -4,8 +4,8 @@ import BeatmapsetRedirect from './pages/BeatmapsetRedirect';
 import BeatmapView from './pages/BeatmapView';
 import { Roadmap } from './pages/Roadmap';
 import RandomBeatmaps from './pages/RandomBeatmaps';
+import BeatmapListPage from './pages/BeatmapList';
 import Navbar from './components/organisms/Navbar/Navbar';
-import BeatmapList from './components/organisms/BeatmapList/BeatmapList';
 
 const App = () => {
   return (
@@ -14,7 +14,7 @@ const App = () => {
         <Navbar />
         <main className="content">
           <Routes>
-            <Route path="/" element={<BeatmapList />} />
+            <Route path="/" element={<BeatmapListPage />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/random" element={<RandomBeatmaps />} />
             <Route path="beatmapsets/:beatmapsetId" element={<BeatmapsetRedirect />} />
