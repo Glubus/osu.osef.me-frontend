@@ -58,7 +58,7 @@
       "id": 7,
       "title": "Queue Helper",
       "description": "Check your map in queue",
-      "status": "in-progress",
+      "status": "finished",
       "date": "2025-08-30",
       "category": "features",
       "priority": "high"
@@ -67,7 +67,7 @@
       "id": 8,
       "title": "Switch between DaisyUI style",
       "description": "Switch between DaisyUI style",
-      "status": "in-progress",
+      "status": "finished",
       "date": "2025-08-30",
       "category": "ui",
       "priority": "low"
@@ -86,7 +86,7 @@
       "title": "Add Back Beatmap Visualizer",
       "description": "Add a beatmap visualizer to the beatmap page",
       "status": "in-progress",
-      "date": "2025-08-30",
+      "date": "2025-08-31",
       "category": "features",
       "priority": "high"
     },
@@ -134,6 +134,51 @@
         "date": "2025-10-30",
         "category": "features",
         "priority": "high"
+      },
+      {
+        "id": 16,
+        "title": "Display Beatmap Status",
+        "description": "Display the status of the beatmap",
+        "status": "finished",
+        "date": "2025-08-30",
+        "category": "features",
+        "priority": "low"
+      },
+      {
+        "id": 17,
+        "title": "Display Patterns on Beatmap Card",
+        "description": "Display the patterns of the beatmap on the beatmap card",
+        "status": "finished",
+        "date": "2025-08-30",
+        "category": "features",
+        "priority": "medium"
+      },
+      {
+        "id": 18,
+        "title": "Shortcut Download Button on Beatmap Card",
+        "description": "Add a shortcut download button on the beatmap card",
+        "status": "finished",
+        "date": "2025-08-30",
+        "category": "features",
+        "priority": "medium"
+      },
+      {
+        "id": 19,
+        "title": "Reset Filters Button",
+        "description": "Add a reset filters button",
+        "status": "finished",
+        "date": "2025-08-30",
+        "category": "features",
+        "priority": "low"
+      },
+      {
+        "id": 20,
+        "title": "Save filters between pages and sessions",
+        "description": "Add a save filters button between pages and sessions",
+        "status": "finished",
+        "date": "2025-08-30",
+        "category": "features",
+        "priority": "medium"
       }
   ]
 }

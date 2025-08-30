@@ -4,13 +4,10 @@ import type { Filters } from "@/types/beatmap/short";
 import FilterSection from "@/components/molecules/FilterSection/FilterSection";
 import BeatmapHorizontalCard from "@/components/molecules/BeatmapHorizontalCard/BeatmapHorizontalCard";
 import { useBeatmapList } from "@/hooks/useBeatmapList";
+import { useFilters } from "@/hooks/useFilters";
 
 const BeatmapList: React.FC = () => {
-  const [filters, setFilters] = useState<Filters>({
-    page: 1,
-    per_page: 100,
-  });
-
+  const { filters, updateFilters, resetFilters } = useFilters();
   const { beatmaps, loading, loadingMore, error, hasMore, loadMore, loadFirstPage } = useBeatmapList(filters);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const isInitialLoad = useRef(true);
@@ -83,13 +80,13 @@ const BeatmapList: React.FC = () => {
   const handleFiltersChange = useCallback((newFilters: Filters) => {
     debugLog('Filters changed', newFilters);
     
-    setFilters({
+    updateFilters({
       ...newFilters,
       page: 1, // Reset to first page when filters change
     });
     setIsInitialLoading(true); // Show loading for filter changes
     isInitialLoad.current = true; // Reset initial load flag
-  }, []);
+  }, [updateFilters]);
 
   if (error) {
     return (
@@ -104,6 +101,17 @@ const BeatmapList: React.FC = () => {
 
   return (
     <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold text-base-content">Beatmaps</h1>
+        <button
+          onClick={resetFilters}
+          className="btn btn-outline btn-sm"
+          title="Reset all filters"
+        >
+          Reset Filters
+        </button>
+      </div>
+      
       <FilterSection filters={filters} onFiltersChange={handleFiltersChange} />
       
       {isInitialLoading ? (

@@ -8,12 +8,19 @@ export const useRoadmap = () => {
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>('all');
 
   const filteredRoadmap = useMemo(() => {
-    return roadmapData.roadmap.filter((item: RoadmapItem) => {
+    const filtered = roadmapData.roadmap.filter((item: RoadmapItem) => {
       const statusMatch = statusFilter === 'all' || item.status === statusFilter;
       const categoryMatch = categoryFilter === 'all' || item.category === categoryFilter;
       const priorityMatch = priorityFilter === 'all' || item.priority === priorityFilter;
       
       return statusMatch && categoryMatch && priorityMatch;
+    });
+
+    // Trier par date (du plus récent au plus ancien)
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return dateA.getTime() - dateB.getTime();
     });
   }, [statusFilter, categoryFilter, priorityFilter]);
 

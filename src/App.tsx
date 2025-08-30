@@ -10,7 +10,7 @@ import BeatmapList from './components/organisms/BeatmapList/BeatmapList';
 const App = () => {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-900">
+      <div className="min-h-screen bg-base-100">
         <Navbar />
         <main className="content">
           <Routes>

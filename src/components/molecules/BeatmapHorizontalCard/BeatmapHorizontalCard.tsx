@@ -1,9 +1,11 @@
 import type React from "react";
 import { useNavigate } from "react-router-dom";
+import { Star, Heart, X, Download } from "lucide-react";
 import type { BeatmapsetCompleteShort } from "@/types/beatmap/short";
 import { Image } from "@/components/atoms/Image/Image";
 import Badge from "@/components/atoms/Badge/Badge";
 import { getRatingColor } from "@/utils/getRatingColor";
+import { useDownload } from "@/hooks/useDownload";
 
 // Fonction utilitaire pour parser les main_patterns
 const parseMainPatterns = (mainPattern: string | string[] | undefined): string[] => {
@@ -38,12 +40,32 @@ const getPatternShortcut = (pattern: string): string => {
   return shortcuts[pattern.toLowerCase()] || pattern;
 };
 
+// Fonction pour déterminer le status de priorité
+const getPriorityStatus = (beatmaps: any[]): { status: string; color: string; icon: React.ReactNode } => {
+  const statuses = beatmaps.map(m => m.beatmap.status);
+  
+  if (statuses.includes('ranked')) {
+    return { status: 'ranked', color: 'blue', icon: <Star size={12} /> };
+  }
+  if (statuses.includes('loved')) {
+    return { status: 'loved', color: 'pink', icon: <Heart size={12} /> };
+  }
+  if (statuses.includes('graveyard')) {
+    return { status: 'graveyard', color: 'gray', icon: <X size={12} /> };
+  }
+  
+  // Par défaut, prendre le premier status trouvé
+  const firstStatus = statuses[0] || 'unknown';
+  return { status: firstStatus, color: 'gray', icon: <span>?</span> };
+};
+
 export type BeatmapCardProps = {
   beatmapset: BeatmapsetCompleteShort;
 };
 
 const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({ beatmapset }) => {
   const navigate = useNavigate();
+  const { downloadBeatmap } = useDownload();
 
   const handleClick = () => {
     if (!beatmapset.beatmapset?.osu_id) return;
@@ -59,6 +81,11 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({ beatmapset }) => {
     if (firstMap?.beatmap?.osu_id) {
       navigate(`/beatmapsets/${beatmapset.beatmapset.osu_id}/${firstMap.beatmap.osu_id}`);
     }
+  };
+
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Empêcher la navigation
+    downloadBeatmap(beatmapset.beatmapset?.osu_id);
   };
 
   if (!beatmapset.beatmapset) return null;
@@ -82,6 +109,9 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({ beatmapset }) => {
   });
   const uniquePatterns = Array.from(allPatterns).slice(0, 3); // Limiter à 3 patterns max
 
+  // Obtenir le status de priorité
+  const priorityStatus = getPriorityStatus(sortedMaps);
+
   return (
     <div
       className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer group h-32 overflow-hidden relative"
@@ -97,48 +127,59 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({ beatmapset }) => {
         <div className="absolute inset-0 bg-black/70" />
       </div>
 
-                           {/* Contenu */}
-        <div className="relative h-full p-4 flex flex-col justify-between text-white">
-          {/* Container commun pour patterns et ratings */}
-          <div className="flex justify-between items-start">
-            {/* Bubbles pour chaque beatmap - à gauche */}
-            <div className="flex gap-2">
-              {displayedMaps.map((m, i) => {
-                const overall = Number(m.msd?.overall ?? 0);
-                return (
-                  <Badge
-                    key={i}
-                    color={getRatingColor(overall)}
-                    title={m.beatmap.difficulty}
-                    outline={true}
-                  >
-                    {overall.toFixed(2)}
-                  </Badge>
-                );
-              })}
-              {remainingCount > 0 && (
-                <Badge color="gray" title={`${remainingCount} difficultés supplémentaires`}>
-                  +{remainingCount}
-                </Badge>
-              )}
-            </div>
+      {/* Bouton de téléchargement qui slide depuis la droite */}
+      <div className="absolute top-0 right-0 h-full w-12 bg-primary/90 transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 z-10 flex items-center justify-center">
+        <button
+          onClick={handleDownload}
+          className="text-white hover:text-primary-content transition-colors"
+          title="Télécharger le beatmapset"
+        >
+          <Download size={20} />
+        </button>
+      </div>
 
-            {/* Patterns badges - à droite */}
-            {uniquePatterns.length > 0 && (
-              <div className="flex gap-1">
-                {uniquePatterns.map((pattern, i) => (
-                  <Badge
-                    key={i}
-                    color="blue"
-                    title={`Pattern: ${pattern}`}
-                    outline={true}
-                  >
-                    {getPatternShortcut(pattern)}
-                  </Badge>
-                ))}
-              </div>
+      {/* Contenu */}
+      <div className="relative h-full p-4 flex flex-col justify-between text-white">
+        {/* Container commun pour patterns et ratings */}
+        <div className="flex justify-between items-start">
+          {/* Bubbles pour chaque beatmap - à gauche */}
+          <div className="flex gap-2">
+            {displayedMaps.map((m, i) => {
+              const overall = Number(m.msd?.overall ?? 0);
+              return (
+                <Badge
+                  key={i}
+                  color={getRatingColor(overall)}
+                  title={m.beatmap.difficulty}
+                  outline={true}
+                >
+                  {overall.toFixed(2)}
+                </Badge>
+              );
+            })}
+            {remainingCount > 0 && (
+              <Badge color="gray" title={`${remainingCount} difficultés supplémentaires`}>
+                +{remainingCount}
+              </Badge>
             )}
           </div>
+
+          {/* Patterns badges - à droite */}
+          {uniquePatterns.length > 0 && (
+            <div className="flex gap-1">
+              {uniquePatterns.map((pattern, i) => (
+                <Badge
+                  key={i}
+                  color="blue"
+                  title={`Pattern: ${pattern}`}
+                  outline={true}
+                >
+                  {getPatternShortcut(pattern)}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Infos principales */}
         <div className="flex-1 flex flex-col justify-center mt-2">
@@ -150,8 +191,17 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({ beatmapset }) => {
           </p>
         </div>
 
-        {/* Range de difficulté en bas à droite */}
-        <div className="absolute bottom-2 right-2">
+        {/* Status et range de difficulté en bas à droite */}
+        <div className="absolute bottom-2 right-2 flex gap-2 items-center">
+          {/* Status badge */}
+          <Badge
+            color={priorityStatus.color as any}
+            title={`Status: ${priorityStatus.status}`}
+          >
+            {priorityStatus.icon}
+          </Badge>
+          
+          {/* Range de difficulté */}
           {sortedMaps.length > 0 && (
             <div className="text-xs text-white bg-black/50 px-2 py-1 rounded">
               {Number(sortedMaps[0].msd?.overall ?? 0).toFixed(2)} - {Number(sortedMaps[sortedMaps.length - 1].msd?.overall ?? 0).toFixed(2)}

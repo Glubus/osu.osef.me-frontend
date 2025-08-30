@@ -3,7 +3,7 @@ import RandomBeatmapList from "@/components/organisms/RandomBeatmapList/RandomBe
 
 const RandomBeatmaps: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-base-100">
       <div className="container mx-auto py-8">
         <RandomBeatmapList />
       </div>
