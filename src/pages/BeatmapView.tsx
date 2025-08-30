@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useBeatmapset } from "@/hooks/useBeatmapset";
 import BeatmapMSDView from "@/components/organisms/BeatmapMSDView/BeatmapMSDView";
 import BeatmapHeader from "@/components/molecules/BeatmapHeader/BeatmapHeader";
+import BeatmapPreview from "@/components/molecules/BeatmapPreview/BeatmapPreview";
 
 const BeatmapView = () => {
   const { beatmapsetId, beatmapId } = useParams();
@@ -43,12 +44,25 @@ const BeatmapView = () => {
         onDifficultyClick={handleDifficultyClick}
       />
 
-      <BeatmapMSDView
-        msdRates={currentBeatmap.msd}
-        selectedRate={selectedRate}
-        onRateChange={setSelectedRate}
-        difficultyName={currentBeatmap.beatmap?.difficulty || ""}
-      />
+      <div className="mb-6">
+        <div className="flex gap-4">
+          {/* Left column 2/3: MSD charts */}
+          <div className="w-2/3 bg-gray-800 rounded-lg p-4">
+            <BeatmapMSDView
+              msdRates={currentBeatmap.msd}
+              selectedRate={selectedRate}
+              onRateChange={setSelectedRate}
+              difficultyName={currentBeatmap.beatmap?.difficulty || ""}
+            />
+          </div>
+          {/* Right column 1/3: Beatmap preview */}
+          <div className="w-1/3 bg-gray-800 rounded-lg p-4">
+            {currentBeatmap.beatmap?.osu_id && (
+              <BeatmapPreview beatmapId={currentBeatmap.beatmap.osu_id} />
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

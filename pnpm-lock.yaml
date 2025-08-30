@@ -47,6 +47,9 @@ importers:
       lucide-react:
         specifier: ^0.542.0
         version: 0.542.0(react@19.1.1)
+      osu-parsers:
+        specifier: ^4.1.7
+        version: 4.1.7(osu-classes@3.1.0)
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1
@@ -894,6 +897,9 @@ packages:
   '@types/d3-timer@3.0.2':
     resolution: {integrity: sha512-Ps3T8E8dZDam6fUyNiMkekK3XUsaUEik+idO9/YjPtfj2qruF8tFBXS7XhtE4iIXBLxhmLjP3SXpLhVf21I9Lw==}
 
+  '@types/node@20.19.11':
+    resolution: {integrity: sha512-uug3FEEGv0r+jrecvUUpbY8lLisvIjg6AAic6a2bSP5OEOLeJsDSnvhCDov7ipFFMXS3orMpzlmi0ZcuGkBbow==}
+
   '@types/react-dom@19.1.8':
     resolution: {integrity: sha512-xG7xaBMJCpcK0RpN8jDbAACQo54ycO6h4dSSmgv8+fu6ZIAdANkx/WsawASUjVXYfy+J9AbUpRMNNEsXCDfDBQ==}
     peerDependencies:
@@ -1455,6 +1461,9 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
+  lzma-js-simple-v2@1.2.3:
+    resolution: {integrity: sha512-6kgy86Q3YLolV6dOwCqdQXg3V07e3XJJ6wqfrN8/s65mvCfqkr+jMJkfiSZNvk+u2ig+G8rLdtaoW/g1oJiwow==}
+
   magic-string@0.30.18:
     resolution: {integrity: sha512-yi8swmWbO17qHhwIBNeeZxTceJMeBvWJaId6dyvTSOwTipqeHhMhOrz6513r1sOKnpvQ7zkhlG8tPrpilwTxHQ==}
 
@@ -1527,6 +1536,14 @@ packages:
   os-homedir@1.0.2:
     resolution: {integrity: sha512-B5JU3cabzk8c67mRRd3ECmROafjYMXbuzlwtqdM8IbS8ktlTix8aFGb2bAGKrSRIlnfKwovGUUr72JUPyOb6kQ==}
     engines: {node: '>=0.10.0'}
+
+  osu-classes@3.1.0:
+    resolution: {integrity: sha512-kz38FWMGnz5lr6ofovUrNaDAcs1gNpwlDc1qHjW86ILQZXG44w/+NflV7EyFomkI05XCADGfltE4FVoPwrkrmg==}
+
+  osu-parsers@4.1.7:
+    resolution: {integrity: sha512-b8aYJy9vK0Yk8zVbxVN+HSChGnXufSxePb3gABG8s5YGCY+31CKJTUHDAVRST0kX4lyeI4Z3iRxsCRftHFHEug==}
+    peerDependencies:
+      osu-classes: ^3.1.0
 
   path-is-absolute@1.0.1:
     resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
@@ -1816,6 +1833,9 @@ packages:
     resolution: {integrity: sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  undici-types@6.21.0:
+    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
     resolution: {integrity: sha512-dA8WbNeb2a6oQzAQ55YlT5vQAWGV9WXOsi3SskE3bcCdM0P4SDd+24zS/OCacdRq5BkdsRj9q3Pg6YyQoxIGqg==}
@@ -2802,6 +2822,10 @@ snapshots:
 
   '@types/d3-timer@3.0.2': {}
 
+  '@types/node@20.19.11':
+    dependencies:
+      undici-types: 6.21.0
+
   '@types/react-dom@19.1.8(@types/react@19.1.11)':
     dependencies:
       '@types/react': 19.1.11
@@ -3322,6 +3346,10 @@ snapshots:
     dependencies:
       react: 19.1.1
 
+  lzma-js-simple-v2@1.2.3:
+    dependencies:
+      '@types/node': 20.19.11
+
   magic-string@0.30.18:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
@@ -3377,6 +3405,13 @@ snapshots:
   onetime@1.1.0: {}
 
   os-homedir@1.0.2: {}
+
+  osu-classes@3.1.0: {}
+
+  osu-parsers@4.1.7(osu-classes@3.1.0):
+    dependencies:
+      lzma-js-simple-v2: 1.2.3
+      osu-classes: 3.1.0
 
   path-is-absolute@1.0.1: {}
 
@@ -3674,6 +3709,8 @@ snapshots:
   tweetnacl@0.14.5: {}
 
   typescript@5.9.2: {}
+
+  undici-types@6.21.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 

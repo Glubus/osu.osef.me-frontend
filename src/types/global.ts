@@ -5,3 +5,5 @@
  * Peut être remplacée par une variable d'environnement si besoin.
  */
 export const API_BASE_URL = "https://api.osef.me";
+
+export const CATBOY_API_BASE_URL = "https://catboy.best";

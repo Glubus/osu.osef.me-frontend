@@ -25,11 +25,11 @@ const BeatmapMSDView: React.FC<BeatmapMSDViewProps> = ({
   }
 
   return (
-    <div className="mb-6">
+    <>
       <div className="flex items-center justify-between mb-3">
-                 <h2 className="text-lg font-semibold">
-           MSD for {difficultyName}:
-         </h2>
+        <h2 className="text-lg font-semibold">
+          MSD for {difficultyName}:
+        </h2>
         {availableRates.length > 1 && (
           <RateSelector
             selectedRate={selectedRate}
@@ -39,25 +39,16 @@ const BeatmapMSDView: React.FC<BeatmapMSDViewProps> = ({
         )}
       </div>
       
-      <div className="flex gap-4">
-        {/* Left column 2/3: radar + line chart */}
-        <div className="w-2/3 bg-gray-800 rounded-lg p-4">
-          <MSDRadarChart data={radarChartData} primaryColor={chartPrimaryColor} />
-          <div className="mt-4">
-                         <h3 className="text-md font-semibold mb-2">Rate evolution</h3>
-            {msdRates && msdRates.length > 0 ? (
-              <MSDRatesLineChart msdRates={msdRates} height={320} />
-            ) : (
-                             <p className="text-gray-400 text-sm">No rate data</p>
-            )}
-          </div>
-        </div>
-        {/* Right column 1/3: empty for now */}
-        <div className="w-1/3 bg-gray-800 rounded-lg p-4">
-          {/* Reserved space for future content */}
-        </div>
+      <MSDRadarChart data={radarChartData} primaryColor={chartPrimaryColor} />
+      <div className="mt-4">
+        <h3 className="text-md font-semibold mb-2">Rate evolution</h3>
+        {msdRates && msdRates.length > 0 ? (
+          <MSDRatesLineChart msdRates={msdRates} height={320} />
+        ) : (
+          <p className="text-gray-400 text-sm">No rate data</p>
+        )}
       </div>
-    </div>
+    </>
   );
 };
 
