@@ -1,6 +1,6 @@
 import type React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Shuffle, BarChart3, ArrowLeft } from "lucide-react";
+import { Shuffle, BarChart3, Home } from "lucide-react";
 import Button from "@/components/atoms/Button/Button";
 import ThemeManager from "@/components/organisms/ThemeManager/ThemeManager";
 
@@ -21,6 +21,15 @@ const Navbar: React.FC = () => {
 
           {/* Navigation */}
           <div className="flex items-center space-x-4">
+            <Button
+              onClick={() => navigate("/")}
+              color="secondary"
+              style="outline"
+              size="md"
+            >
+              <Home size={16} className="mr-2" />
+              List
+            </Button>
             <Button
               onClick={() => navigate("/roadmap")}
               color="secondary"
@@ -47,17 +56,6 @@ const Navbar: React.FC = () => {
               <BarChart3 size={16} className="mr-2" />
               Stats
             </Button>
-            {!isHomePage && (
-              <Button
-                onClick={() => navigate("/")}
-                color="secondary"
-                style="outline"
-                size="md"
-              >
-                <ArrowLeft size={16} className="mr-2" />
-                Back to list
-              </Button>
-            )}
 
             {/* Theme Manager */}
             <ThemeManager />

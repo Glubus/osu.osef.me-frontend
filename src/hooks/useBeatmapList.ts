@@ -1,141 +1,80 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { getBeatmaps } from "@/services/api/get_beatmap";
-import type { BeatmapsetCompleteShort } from "@/types/beatmap/short";
 import type { Filters } from "@/types/beatmap/short";
+import { useMemo } from 'react';
 
 export const useBeatmapList = (filters: Filters) => {
-  const [beatmaps, setBeatmaps] = useState<BeatmapsetCompleteShort[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  
-  // Refs pour éviter les appels multiples
-  const loadingRef = useRef(false);
-  const loadingMoreRef = useRef(false);
-  const filtersRef = useRef(filters);
-  const currentPageRef = useRef(currentPage);
+  // Créer une clé de query stable basée sur les filtres
+  const queryKey = useMemo(() => [
+    'beatmaps',
+    filters.search_term,
+    filters.overall_min,
+    filters.overall_max,
+    filters.selected_pattern,
+    filters.pattern_min,
+    filters.pattern_max
+  ], [
+    filters.search_term,
+    filters.overall_min,
+    filters.overall_max,
+    filters.selected_pattern,
+    filters.pattern_min,
+    filters.pattern_max
+  ]);
 
-  // Update refs when values change
-  filtersRef.current = filters;
-  currentPageRef.current = currentPage;
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey,
+    queryFn: async ({ pageParam = 1 }) => {
+      const filtersWithPage = {
+        ...filters,
+        page: pageParam,
+      };
+      return getBeatmaps(filtersWithPage);
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined;
+    },
+    initialPageParam: 1,
+    enabled: true, // Toujours activé, les queries se déclenchent automatiquement quand les deps changent
+  });
 
-  // Debug logging
-  const debugLog = (message: string, data?: any) => {
-    console.log(`[BeatmapList] ${message}`, data || '');
+  // Transformer les données pour garder la même interface
+  const beatmaps = useMemo(() => {
+    if (!data?.pages) return [];
+    return data.pages.flatMap(page => page.beatmaps);
+  }, [data?.pages]);
+
+  const loading = status === 'pending';
+  const loadingMore = isFetchingNextPage;
+  const hasMore = hasNextPage;
+  const errorMessage = error ? (error instanceof Error ? error.message : 'Error loading beatmaps') : null;
+
+  const loadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
   };
 
-  // Reset everything when filters change
-  useEffect(() => {
-    debugLog('Filters changed, resetting state', filters);
-    
-    setBeatmaps([]);
-    setCurrentPage(1);
-    setHasMore(true);
-    setError(null);
-    setLoading(false);
-    setLoadingMore(false);
-    loadingRef.current = false;
-    loadingMoreRef.current = false;
-    
-    // Reload first page with new filters
-    setTimeout(() => {
-      debugLog('Reloading with new filters');
-      loadBeatmaps(1);
-    }, 0);
-  }, [filters.search_term, filters.overall_min, filters.overall_max, filters.selected_pattern, filters.pattern_min, filters.pattern_max]);
-
-  const loadBeatmaps = useCallback(async (page?: number) => {
-    const targetPage = page ?? currentPageRef.current;
-    
-    // Prevent multiple simultaneous calls
-    if (loadingRef.current || loadingMoreRef.current) {
-      debugLog('Preventing duplicate load call for page:', targetPage);
-      return;
+  const loadFirstPage = () => {
+    if (beatmaps.length === 0 && !isFetching) {
+      refetch();
     }
-
-    try {
-      if (targetPage === 1) {
-        setLoading(true);
-        loadingRef.current = true;
-        debugLog('Starting initial load');
-      } else {
-        setLoadingMore(true);
-        loadingMoreRef.current = true;
-        debugLog('Loading more, page:', targetPage);
-      }
-      setError(null);
-      
-      const currentFilters = {
-        ...filtersRef.current,
-        page: targetPage,
-      };
-      
-      debugLog('Making API call with filters:', currentFilters);
-      
-      const data = await getBeatmaps(currentFilters);
-      
-      debugLog('Received data:', { 
-        beatmapsCount: data.beatmaps.length, 
-        totalPages: data.total_pages,
-        currentPage: targetPage 
-      });
-      
-      if (targetPage === 1) {
-        setBeatmaps(data.beatmaps);
-      } else {
-        setBeatmaps(prev => [...prev, ...data.beatmaps]);
-      }
-      
-      setHasMore(targetPage < data.total_pages);
-    } catch (err: any) {
-      setError("Error loading beatmaps");
-      console.error("BeatmapList error:", err);
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-      loadingRef.current = false;
-      loadingMoreRef.current = false;
-      debugLog('Load completed for page:', targetPage);
-    }
-  }, []); // Empty dependencies - using refs instead
-
-  const loadMore = useCallback(() => {
-    if (!loadingRef.current && !loadingMoreRef.current && hasMore) {
-      const nextPage = currentPageRef.current + 1;
-      debugLog(`loadMore called, incrementing page from ${currentPageRef.current} to ${nextPage}`);
-      setCurrentPage(nextPage);
-      // Load immediately
-      setTimeout(() => loadBeatmaps(nextPage), 0);
-    } else {
-      debugLog('loadMore blocked:', { 
-        loading: loadingRef.current, 
-        loadingMore: loadingMoreRef.current, 
-        hasMore 
-      });
-    }
-  }, [hasMore, loadBeatmaps]);
-
-  const loadFirstPage = useCallback(() => {
-    if (!loadingRef.current && !loadingMoreRef.current && currentPageRef.current === 1 && beatmaps.length === 0) {
-      debugLog('loadFirstPage called');
-      loadBeatmaps(1);
-    } else {
-      debugLog('loadFirstPage blocked:', { 
-        loading: loadingRef.current, 
-        loadingMore: loadingMoreRef.current, 
-        currentPage: currentPageRef.current, 
-        beatmapsLength: beatmaps.length 
-      });
-    }
-  }, [beatmaps.length, loadBeatmaps]);
+  };
 
   return {
     beatmaps,
     loading,
     loadingMore,
-    error,
+    error: errorMessage,
     hasMore,
     loadMore,
     loadFirstPage,

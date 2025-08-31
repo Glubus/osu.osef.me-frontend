@@ -1,10 +1,17 @@
 // services/api/get_beatmapset.ts
-import axios from "axios";
-import { API_BASE_URL } from "@/types/global";
 import type { BeatmapByIdExtendedResponse } from "@/types/beatmap/extended";
+import { api } from "./client";
+import { createLogger } from "@/utils/logger";
 
+const logger = createLogger('API:Beatmapset');
+
+/**
+ * Fetches a complete beatmapset by its ID
+ * @param id The ID of the beatmapset to fetch
+ * @returns A promise containing the complete beatmapset data
+ */
 export async function getBeatmapsetById(id: string): Promise<BeatmapByIdExtendedResponse> {
-  const res = await axios.get<BeatmapByIdExtendedResponse>(`${API_BASE_URL}/api/beatmapset/${id}`);
-  console.log(res.data);
-  return res.data;
+  logger.debug('Fetching beatmapset by ID', { id });
+  
+  return api.get<BeatmapByIdExtendedResponse>(`/api/beatmapset/${id}`);
 }

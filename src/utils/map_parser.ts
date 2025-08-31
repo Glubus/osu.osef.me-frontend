@@ -1,12 +1,6 @@
 import { BeatmapDecoder } from "osu-parsers";
 import { fetchOsuFile } from "@/services/api/fetch_osu";
-
-export interface HitObject {
-	startTime: number;
-	endTime?: number;
-	column: number;
-	type: "circle" | "hold";
-}
+import type { HitObject } from "@/types/beatmap/hitObjects";
 
 export class MapParserService {
 	private static decoder = new BeatmapDecoder();
@@ -58,7 +52,7 @@ export class MapParserService {
 
 			return maniaHitObjects.sort((a, b) => a.startTime - b.startTime);
 		} catch (error) {
-			console.error("Erreur lors du parsing de la beatmap:", error);
+			
 			throw error;
 		}
 	}

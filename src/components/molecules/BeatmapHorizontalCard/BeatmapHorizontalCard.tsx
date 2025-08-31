@@ -1,13 +1,25 @@
 import type React from "react";
 import { useNavigate } from "react-router-dom";
-import { Star, Heart, X, Download } from "lucide-react";
-import type { BeatmapsetCompleteShort } from "@/types/beatmap/short";
+import { useCallback, useMemo } from "react";
+import { icons } from 'lucide-react';
+import { z } from 'zod';
+import type { BeatmapsetCompleteShort, BeatmapCompleteShort } from "@/types/beatmap/short";
+import type { BeatmapStatus } from "@/types/beatmap/status";
 import { Image } from "@/components/atoms/Image/Image";
 import Badge from "@/components/atoms/Badge/Badge";
 import { getRatingColor } from "@/utils/getRatingColor";
 import { useDownload } from "@/hooks/useDownload";
 
-// Fonction utilitaire pour parser les main_patterns
+
+const Star = icons.Star;
+const Heart = icons.Heart;
+const Clock = icons.Clock;
+const Download = icons.Download;
+
+// Schema Zod pour valider les patterns
+const PatternSchema = z.array(z.string()).or(z.string());
+
+// Fonction utilitaire pour parser les main_patterns de manière sécurisée
 const parseMainPatterns = (mainPattern: string | string[] | undefined): string[] => {
   if (!mainPattern) return [];
   
@@ -15,12 +27,13 @@ const parseMainPatterns = (mainPattern: string | string[] | undefined): string[]
     return mainPattern;
   }
   
-  // Si c'est une string, essayer de la parser comme JSON
+  // Si c'est une string, essayer de la parser comme JSON avec validation Zod
   try {
     const parsed = JSON.parse(mainPattern);
-    return Array.isArray(parsed) ? parsed : [mainPattern];
+    const validated = PatternSchema.parse(parsed);
+    return Array.isArray(validated) ? validated : [validated];
   } catch {
-    // Si le parsing JSON échoue, traiter comme une string simple
+    // Si le parsing JSON ou la validation échoue, traiter comme une string simple
     return [mainPattern];
   }
 };
@@ -55,8 +68,8 @@ const getPatternColor = (pattern: string): string => {
   return colorMap[pattern.toLowerCase()] || 'gray';
 };
 
-// Fonction pour déterminer le status de priorité
-const getPriorityStatus = (beatmaps: any[]): { status: string; color: string; icon: React.ReactNode } => {
+// Function to determine priority status
+const getPriorityStatus = (beatmaps: BeatmapCompleteShort[]): BeatmapStatus => {
   const statuses = beatmaps.map(m => m.beatmap.status);
   
   if (statuses.includes('ranked')) {
@@ -66,12 +79,12 @@ const getPriorityStatus = (beatmaps: any[]): { status: string; color: string; ic
     return { status: 'loved', color: 'pink', icon: <Heart size={12} /> };
   }
   if (statuses.includes('graveyard')) {
-    return { status: 'graveyard', color: 'gray', icon: <X size={12} /> };
+    return { status: 'graveyard', color: 'gray', icon: <Clock size={12} /> };
   }
   
-  // Par défaut, prendre le premier status trouvé
+  // Default: take the first status found
   const firstStatus = statuses[0] || 'unknown';
-  return { status: firstStatus, color: 'gray', icon: <span>?</span> };
+  return { status: firstStatus as any, color: 'gray', icon: <span>?</span> };
 };
 
 export type BeatmapCardProps = {
@@ -82,50 +95,53 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({ beatmapset }) => {
   const navigate = useNavigate();
   const { downloadBeatmap } = useDownload();
 
-  const handleClick = () => {
-    if (!beatmapset.beatmapset?.osu_id) return;
-    
-    // Trier les maps par MSD overall croissant et prendre la première
-    const sortedMaps = [...beatmapset.beatmap].sort((a, b) => {
+  // Memoize sorted maps to avoid recalculation on every render
+  const sortedMaps = useMemo(() => 
+    [...beatmapset.beatmap].sort((a, b) => {
       const aOverall = Number(a.msd?.overall ?? 0);
       const bOverall = Number(b.msd?.overall ?? 0);
       return aOverall - bOverall;
+    }), [beatmapset.beatmap]
+  );
+
+  // Memoize displayed maps and remaining count
+  const { displayedMaps, remainingCount } = useMemo(() => ({
+    displayedMaps: sortedMaps.slice(0, 5),
+    remainingCount: Math.max(0, sortedMaps.length - 5)
+  }), [sortedMaps]);
+
+  // Memoize unique patterns calculation
+  const uniquePatterns = useMemo(() => {
+    const allPatterns = new Set<string>();
+    sortedMaps.forEach(map => {
+      const patterns = parseMainPatterns(map.msd?.main_pattern);
+      patterns.forEach(pattern => allPatterns.add(pattern));
     });
+    return Array.from(allPatterns).slice(0, 3); // Limiter à 3 patterns max
+  }, [sortedMaps]);
+
+  // Memoize priority status
+  const priorityStatus = useMemo(() => 
+    getPriorityStatus(sortedMaps), [sortedMaps]
+  );
+
+  // Memoize click handler
+  const handleClick = useCallback(() => {
+    if (!beatmapset.beatmapset?.osu_id) return;
     
     const firstMap = sortedMaps.find(m => m.beatmap?.osu_id);
     if (firstMap?.beatmap?.osu_id) {
       navigate(`/beatmapsets/${beatmapset.beatmapset.osu_id}/${firstMap.beatmap.osu_id}`);
     }
-  };
+  }, [beatmapset.beatmapset?.osu_id, sortedMaps, navigate]);
 
-  const handleDownload = (e: React.MouseEvent) => {
+  // Memoize download handler
+  const handleDownload = useCallback((e: React.MouseEvent) => {
     e.stopPropagation(); // Empêcher la navigation
     downloadBeatmap(beatmapset.beatmapset?.osu_id);
-  };
+  }, [downloadBeatmap, beatmapset.beatmapset?.osu_id]);
 
   if (!beatmapset.beatmapset) return null;
-
-  // Trier les maps par MSD overall croissant (du plus facile au plus difficile)
-  const sortedMaps = [...beatmapset.beatmap].sort((a, b) => {
-    const aOverall = Number(a.msd?.overall ?? 0);
-    const bOverall = Number(b.msd?.overall ?? 0);
-    return aOverall - bOverall;
-  });
-
-  // Prendre seulement les 5 premiers maps
-  const displayedMaps = sortedMaps.slice(0, 5);
-  const remainingCount = sortedMaps.length - 5;
-
-  // Collecter tous les patterns uniques
-  const allPatterns = new Set<string>();
-  sortedMaps.forEach(map => {
-    const patterns = parseMainPatterns(map.msd?.main_pattern);
-    patterns.forEach(pattern => allPatterns.add(pattern));
-  });
-  const uniquePatterns = Array.from(allPatterns).slice(0, 3); // Limiter à 3 patterns max
-
-  // Obtenir le status de priorité
-  const priorityStatus = getPriorityStatus(sortedMaps);
 
   return (
     <div

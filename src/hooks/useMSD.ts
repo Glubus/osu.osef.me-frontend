@@ -6,17 +6,25 @@ import { RADAR_METRICS } from "@/types/charts";
 import { COLOR_HEX } from "@/types/colors";
 
 export const useMSD = (msdRates: MSDExtended[] | undefined, selectedRate: number) => {
+  // ✅ Early return pour éviter calculs inutiles
+  if (!msdRates || msdRates.length === 0) {
+    return { 
+      currentMSD: null, 
+      availableRates: [], 
+      radarChartData: [], 
+      chartPrimaryColor: COLOR_HEX.blue 
+    };
+  }
+
+  // ✅ Memoization pour éviter recalculs - Available rates avec déduplication
+  const availableRates = useMemo(() => {
+    return [...new Set(msdRates.map(msd => Number(msd.rate)))].sort((a, b) => a - b);
+  }, [msdRates]);
+
   // Get current MSD for selected rate
   const currentMSD = useMemo(() => {
-    if (!msdRates || msdRates.length === 0) return null;
     return msdRates.find(msd => Number(msd.rate) === selectedRate) || msdRates[0];
   }, [msdRates, selectedRate]);
-
-  // Get available rates
-  const availableRates = useMemo(() => {
-    if (!msdRates) return [];
-    return msdRates.map(msd => Number(msd.rate)).sort((a, b) => a - b);
-  }, [msdRates]);
 
   // Prepare radar chart data
   const radarChartData = useMemo((): MSDDataPoint[] => {

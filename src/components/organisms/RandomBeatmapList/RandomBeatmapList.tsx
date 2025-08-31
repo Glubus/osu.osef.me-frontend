@@ -18,10 +18,6 @@ const RandomBeatmapList: React.FC = () => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const isInitialLoad = useRef(true);
 
-  // Debug logging
-  const debugLog = (message: string, data?: any) => {
-    console.log(`[RandomBeatmapList Component] ${message}`, data || '');
-  };
 
   // Update local filters when saved filters change
   useEffect(() => {
@@ -32,7 +28,7 @@ const RandomBeatmapList: React.FC = () => {
   // Load first page only once when component mounts
   useEffect(() => {
     if (isInitialLoad.current) {
-      debugLog('Component mounted, loading first page');
+      
       setIsInitialLoading(true);
       loadFirstPage();
       isInitialLoad.current = false;
@@ -47,7 +43,7 @@ const RandomBeatmapList: React.FC = () => {
   }, [beatmaps.length, isInitialLoading]);
 
   const handleFiltersChange = useCallback((newFilters: Filters) => {
-    debugLog('Filters changed', newFilters);
+     
     
     // Remove pagination from filters for random beatmaps
     const { page, per_page, ...randomFilters } = newFilters;
@@ -60,7 +56,7 @@ const RandomBeatmapList: React.FC = () => {
   }, [updateFilters]);
 
   const handleReroll = useCallback(() => {
-    debugLog('Reroll button clicked');
+  
     reroll();
   }, [reroll]);
 

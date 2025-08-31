@@ -17,33 +17,26 @@ const BeatmapsetRedirect = () => {
   const [status, setStatus] = useState<PendingBeatmapStatusResponse | null>(null);
   const [pollingInterval, setPollingInterval] = useState<number | null>(null);
 
-  // Debug logging
-  const debugLog = (message: string, data?: any) => {
-    console.log(`[BeatmapsetRedirect] ${message}`, data || '');
-  };
+
 
   // Function to check pending beatmap status
   const checkPendingStatus = async (beatmapId: number): Promise<PendingBeatmapStatusResponse | null> => {
     try {
-      debugLog('Checking pending status for beatmap:', beatmapId);
       const response = await axios.get<PendingBeatmapStatusResponse>(
         `${API_BASE_URL}/api/pending_beatmap/status/${beatmapId}`
       );
-      debugLog('Pending status received:', response.data);
       return response.data;
     } catch (error: any) {
       if (error.response?.status === 404) {
-        debugLog('Beatmap not found in pending queue (404)');
+
         return null;
       }
-      debugLog('Error checking pending status:', error);
       throw error;
     }
   };
 
   // Function to start polling for status
   const startPolling = (beatmapId: number) => {
-    debugLog('Starting polling for beatmap:', beatmapId);
     
     const poll = async () => {
       try {
@@ -53,12 +46,9 @@ const BeatmapsetRedirect = () => {
           setStatus(statusData);
           setMessage(`Beatmap is being processed... Position: ${statusData.position}/${statusData.total}`);
         } else {
-          // Beatmap is no longer in pending queue, try to get it
-          debugLog('Beatmap no longer pending, trying to get beatmapset');
           await tryGetBeatmapset();
         }
       } catch (error) {
-        debugLog('Polling error:', error);
         setMessage("Error checking beatmap status. Please try again.");
         stopPolling();
       }
@@ -77,7 +67,7 @@ const BeatmapsetRedirect = () => {
     if (pollingInterval) {
       clearInterval(pollingInterval);
       setPollingInterval(null);
-      debugLog('Polling stopped');
+
     }
   };
 
@@ -86,11 +76,11 @@ const BeatmapsetRedirect = () => {
     if (!beatmapsetId) return;
     
     try {
-      debugLog('Trying to get beatmapset by ID:', beatmapsetId);
+
       const data = await getBeatmapsetById(beatmapsetId);
       
       if (data.beatmap.beatmapset?.id) {
-        debugLog('Beatmapset found, navigating');
+
         stopPolling();
         setMessage("Beatmap processed successfully! Redirecting...");
         
@@ -113,7 +103,7 @@ const BeatmapsetRedirect = () => {
         }
       }
     } catch (error) {
-      debugLog('Beatmapset not found, will retry POST:', error);
+
       // If beatmapset still doesn't exist, retry POST
       await retryPostBeatmap();
     }
@@ -131,7 +121,7 @@ const BeatmapsetRedirect = () => {
     }
 
     try {
-      debugLog('Retrying POST for beatmap:', hashBeatmapId);
+
       const res = await postBeatmapById(Number(hashBeatmapId));
       
       if (String(res.status) === "200") {
@@ -141,7 +131,7 @@ const BeatmapsetRedirect = () => {
         setMessage(`Failed to add beatmap: ${res.message}`);
       }
     } catch (error) {
-      debugLog('POST retry failed:', error);
+
       setMessage("Failed to add beatmap to queue. Please try again.");
     }
   };
@@ -160,7 +150,7 @@ const BeatmapsetRedirect = () => {
         // If beatmapset is missing but we have a beatmap id in hash, trigger POST to populate by osu_id
         if (!data.beatmap.beatmapset?.id && hashBeatmapId) {
           try {
-            debugLog('Beatmapset not found, posting beatmap by ID:', hashBeatmapId);
+
             const res = await postBeatmapById(Number(hashBeatmapId));
             
             if (String(res.status) === "200") {
@@ -171,7 +161,7 @@ const BeatmapsetRedirect = () => {
               setMessage(`Failed to add beatmap: ${res.message}`);
             }
           } catch (e) {
-            debugLog('POST /beatmap/by_osu_id failed:', e);
+
             setMessage("Failed to add beatmap to queue.");
           }
         }
@@ -191,7 +181,7 @@ const BeatmapsetRedirect = () => {
           }
         }
       } catch (e) {
-        debugLog('Initial run error:', e);
+
         setMessage("Error loading beatmap. Please try again.");
       }
     }

@@ -26,7 +26,7 @@ export const useBeatmapCount = (): UseBeatmapCountReturn => {
       setData(result);
     } catch (err: any) {
       setError(err.message || 'An error occurred while fetching beatmap count');
-      console.error('Error fetching beatmap count:', err);
+
     } finally {
       setLoading(false);
     }

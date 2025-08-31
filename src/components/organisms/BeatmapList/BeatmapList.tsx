@@ -20,14 +20,10 @@ const BeatmapList: React.FC = () => {
   loadingRef.current = loading;
   loadingMoreRef.current = loadingMore;
 
-  // Debug logging
-  const debugLog = (message: string, data?: any) => {
-    console.log(`[BeatmapList Component] ${message}`, data || '');
-  };
+
 
   // Scroll listener pour détecter quand on arrive en bas
   useEffect(() => {
-    debugLog('Setting up scroll listener');
     
     const handleScroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -36,14 +32,7 @@ const BeatmapList: React.FC = () => {
       
       // Si on est à moins de 200px du bas
       if (scrollTop + windowHeight >= documentHeight - 200) {
-        debugLog('Near bottom detected', { 
-          scrollTop, 
-          windowHeight, 
-          documentHeight,
-          hasMore: hasMoreRef.current,
-          loading: loadingRef.current,
-          loadingMore: loadingMoreRef.current
-        });
+
         
         if (hasMoreRef.current && !loadingRef.current && !loadingMoreRef.current) {
           loadMore();
@@ -52,10 +41,8 @@ const BeatmapList: React.FC = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    debugLog('Scroll listener attached');
 
     return () => {
-      debugLog('Cleaning up scroll listener');
       window.removeEventListener('scroll', handleScroll);
     };
   }, [loadMore]);
@@ -63,7 +50,7 @@ const BeatmapList: React.FC = () => {
   // Load first page only once when component mounts
   useEffect(() => {
     if (isInitialLoad.current) {
-      debugLog('Component mounted, loading first page');
+
       setIsInitialLoading(true);
       loadFirstPage();
       isInitialLoad.current = false;
@@ -78,7 +65,7 @@ const BeatmapList: React.FC = () => {
   }, [beatmaps.length, isInitialLoading]);
 
   const handleFiltersChange = useCallback((newFilters: Filters) => {
-    debugLog('Filters changed', newFilters);
+
     
     updateFilters({
       ...newFilters,

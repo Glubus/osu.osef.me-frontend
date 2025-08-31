@@ -1,4 +1,5 @@
 import type React from "react";
+import { memo } from "react";
 import type { MSDExtended } from "@/types/beatmap/extended";
 import MSDRadarChart from "@/components/molecules/MSDRadarCharts/MSDRadarChart";
 import MSDRatesLineChart from "@/components/molecules/MSDRatesLineChart/MSDRatesLineChart";
@@ -12,7 +13,7 @@ export interface BeatmapMSDViewProps {
   difficultyName: string;
 }
 
-const BeatmapMSDView: React.FC<BeatmapMSDViewProps> = ({
+const BeatmapMSDView: React.FC<BeatmapMSDViewProps> = memo(({
   msdRates,
   selectedRate,
   onRateChange,
@@ -21,7 +22,7 @@ const BeatmapMSDView: React.FC<BeatmapMSDViewProps> = ({
   const { currentMSD, availableRates, radarChartData, chartPrimaryColor } = useMSD(msdRates, selectedRate);
 
   if (!currentMSD) {
-    return <p className="text-gray-400">No MSD data available</p>;
+    return <p className="text-base-content/60">No MSD data available</p>;
   }
 
   return (
@@ -45,11 +46,13 @@ const BeatmapMSDView: React.FC<BeatmapMSDViewProps> = ({
         {msdRates && msdRates.length > 0 ? (
           <MSDRatesLineChart msdRates={msdRates} height={320} />
         ) : (
-          <p className="text-gray-400 text-sm">No rate data</p>
+          <p className="text-base-content/60 text-sm">No rate data</p>
         )}
       </div>
     </>
   );
-};
+});
+
+BeatmapMSDView.displayName = 'BeatmapMSDView';
 
 export default BeatmapMSDView;

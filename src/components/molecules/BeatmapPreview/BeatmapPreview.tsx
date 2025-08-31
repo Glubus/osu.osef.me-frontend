@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useBeatmapPreview } from "@/hooks/useBeatmapPreview";
 import { MapParserService } from "@/utils/map_parser";
 import type { HitObject } from "@/services/beatmapPreview/core/types";
+import Button from "@/components/atoms/Button/Button";
 
 interface BeatmapPreviewProps {
 	beatmapId: number;
@@ -35,7 +36,7 @@ const loadSettings = (): PreviewSettings => {
 			return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
 		}
 	} catch (error) {
-		console.error("Failed to load settings:", error);
+		
 	}
 	return DEFAULT_SETTINGS;
 };
@@ -45,7 +46,7 @@ const saveSettings = (settings: PreviewSettings) => {
 	try {
 		localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
 	} catch (error) {
-		console.error("Failed to save settings:", error);
+		
 	}
 };
 
@@ -77,14 +78,14 @@ const BeatmapPreview: React.FC<BeatmapPreviewProps> = ({ beatmapId }) => {
 				setIsLoading(true);
 				setError(null);
 
-				console.log("🎵 Loading beatmap with ID:", beatmapId);
+				
 				
 				let parsedHitObjects;
 				try {
 					parsedHitObjects = await MapParserService.parseOsuFile(beatmapId);
-					console.log("✅ Parsed hit objects:", parsedHitObjects.length);
+					
 				} catch (parseError) {
-					console.error("❌ Parsing failed, using test data:", parseError);
+					
 					// Use test data - more spread out in time
 					parsedHitObjects = [
 						{ startTime: 2000, column: 0, type: "circle" },
@@ -123,7 +124,7 @@ const BeatmapPreview: React.FC<BeatmapPreviewProps> = ({ beatmapId }) => {
 
 				setIsLoading(false);
 			} catch (err) {
-				console.error("Error loading beatmap:", err);
+				
 				setError(err instanceof Error ? err.message : "Failed to load beatmap");
 				setIsLoading(false);
 			}
@@ -192,7 +193,7 @@ const BeatmapPreview: React.FC<BeatmapPreviewProps> = ({ beatmapId }) => {
 	const handleSettingChange = (key: keyof PreviewSettings, value: any) => {
 		setSettings(prev => {
 			const newSettings = { ...prev, [key]: value };
-			console.log(`Setting changed: ${key} = ${value}`, newSettings);
+			
 			return newSettings;
 		});
 	};
@@ -206,50 +207,55 @@ const BeatmapPreview: React.FC<BeatmapPreviewProps> = ({ beatmapId }) => {
 			{/* Header */}
 			<div className="mb-3 flex-shrink-0">
 				<div className="flex items-center justify-between">
-					<h3 className="text-lg font-semibold text-white">Beatmap Preview</h3>
+					<h3 className="text-lg font-semibold text-base-content">Beatmap Preview</h3>
 					<div className="flex items-center gap-2">
-						<button
+						<Button
 							onClick={() => setShowSettings(!showSettings)}
-							className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm text-white"
+							color="secondary"
+							size="sm"
 						>
 							{showSettings ? "Hide" : "Settings"}
-						</button>
-						<button
+						</Button>
+						<Button
 							onClick={handlePlayPause}
-							className="px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded text-sm text-white"
+							color="primary"
+							size="sm"
 						>
 							{isPlaying ? "Pause" : "Play"}
-						</button>
-						<button
+						</Button>
+						<Button
 							onClick={handleReset}
-							className="px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded text-sm text-white"
+							color="secondary"
+							style="ghost"
+							size="sm"
 						>
 							Reset
-						</button>
+						</Button>
 					</div>
 				</div>
 			</div>
 
 			{/* Settings Panel */}
 			{showSettings && (
-				<div className="mb-3 p-3 bg-gray-800 rounded border border-gray-700 flex-shrink-0">
+				<div className="mb-3 p-3 bg-base-200 rounded border border-base-300 flex-shrink-0">
 					<div className="flex items-center justify-between mb-3">
-						<h4 className="text-sm font-semibold text-white">Preview Settings</h4>
-						<button
+						<h4 className="text-sm font-semibold text-base-content">Preview Settings</h4>
+						<Button
 							onClick={resetSettings}
-							className="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-xs text-white"
+							color="error"
+							size="sm"
 						>
 							Reset to Default
-						</button>
+						</Button>
 					</div>
 					<div className="grid grid-cols-2 gap-4">
 						{/* Scroll Direction */}
 						<div>
-							<label className="block text-sm text-gray-300 mb-1">Scroll Direction</label>
+							<label className="block text-sm text-base-content/70 mb-1">Scroll Direction</label>
 							<select
 								value={settings.scrollDirection}
 								onChange={(e) => handleSettingChange("scrollDirection", e.target.value)}
-								className="w-full px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm"
+								className="select select-bordered w-full select-sm"
 							>
 								<option value="up">Upscroll</option>
 								<option value="down">Downscroll</option>
@@ -258,11 +264,11 @@ const BeatmapPreview: React.FC<BeatmapPreviewProps> = ({ beatmapId }) => {
 
 						{/* Note Type */}
 						<div>
-							<label className="block text-sm text-gray-300 mb-1">Note Type</label>
+							<label className="block text-sm text-base-content/70 mb-1">Note Type</label>
 							<select
 								value={settings.noteType}
 								onChange={(e) => handleSettingChange("noteType", e.target.value)}
-								className="w-full px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm"
+								className="select select-bordered w-full select-sm"
 							>
 								<option value="circle">Circle</option>
 								<option value="arrow">Arrow</option>
@@ -273,39 +279,39 @@ const BeatmapPreview: React.FC<BeatmapPreviewProps> = ({ beatmapId }) => {
 
 						{/* Note Color */}
 						<div>
-							<label className="block text-sm text-gray-300 mb-1">Note Color</label>
+							<label className="block text-sm text-base-content/70 mb-1">Note Color</label>
 							<div className="flex items-center gap-2">
 								<input
 									type="color"
 									value={settings.noteColor}
 									onChange={(e) => handleSettingChange("noteColor", e.target.value)}
-									className="w-12 h-8 bg-gray-700 border border-gray-600 rounded cursor-pointer"
+									className="w-12 h-8 bg-base-100 border border-base-300 rounded cursor-pointer"
 								/>
-								<span className="text-xs text-gray-400">{settings.noteColor}</span>
+								<span className="text-xs text-base-content/60">{settings.noteColor}</span>
 							</div>
 						</div>
 
 						{/* LN Color */}
 						<div>
-							<label className="block text-sm text-gray-300 mb-1">LN Color</label>
+							<label className="block text-sm text-base-content/70 mb-1">LN Color</label>
 							<div className="flex items-center gap-2">
 								<input
 									type="color"
 									value={settings.lnColor}
 									onChange={(e) => handleSettingChange("lnColor", e.target.value)}
-									className="w-12 h-8 bg-gray-700 border border-gray-600 rounded cursor-pointer"
+									className="w-12 h-8 bg-base-100 border border-base-300 rounded cursor-pointer"
 								/>
-								<span className="text-xs text-gray-400">{settings.lnColor}</span>
+								<span className="text-xs text-base-content/60">{settings.lnColor}</span>
 							</div>
 						</div>
 
 						{/* Progress Bar Position */}
 						<div>
-							<label className="block text-sm text-gray-300 mb-1">Progress Bar Position</label>
+							<label className="block text-sm text-base-content/70 mb-1">Progress Bar Position</label>
 							<select
 								value={settings.progressBarPosition}
 								onChange={(e) => handleSettingChange("progressBarPosition", e.target.value)}
-								className="w-full px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm"
+								className="select select-bordered w-full select-sm"
 							>
 								<option value="bottom">Bottom</option>
 								<option value="top">Top</option>
@@ -318,8 +324,8 @@ const BeatmapPreview: React.FC<BeatmapPreviewProps> = ({ beatmapId }) => {
 			{/* Scroll Speed Slider */}
 			<div className="mb-3 flex-shrink-0">
 				<div className="flex items-center justify-between mb-1">
-					<label className="text-sm text-gray-300">Scroll Speed</label>
-					<span className="text-sm text-gray-400">{scrollSpeed.toFixed(1)}x</span>
+					<label className="text-sm text-base-content/70">Scroll Speed</label>
+					<span className="text-sm text-base-content/60">{scrollSpeed.toFixed(1)}x</span>
 				</div>
 				<input
 					type="range"
@@ -328,16 +334,13 @@ const BeatmapPreview: React.FC<BeatmapPreviewProps> = ({ beatmapId }) => {
 					step="0.1"
 					value={scrollSpeed}
 					onChange={handleScrollSpeedChange}
-					className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
-					style={{
-						background: `linear-gradient(to right, #10b981 0%, #10b981 ${(scrollSpeed / 2.0) * 100}%, #374151 ${(scrollSpeed / 2.0) * 100}%, #374151 100%)`
-					}}
+					className="range range-primary w-full"
 				/>
 			</div>
 
-			<div ref={mountRef} className="flex-1 min-h-0 w-full bg-gray-900 rounded border border-gray-700 overflow-hidden" style={{ maxHeight: "700px" }}>
-				{isLoading && <div className="flex items-center justify-center h-full text-gray-400">Loading preview...</div>}
-				{error && <div className="flex items-center justify-center h-full text-red-400 text-sm">{error}</div>}
+			<div ref={mountRef} className="flex-1 min-h-0 w-full bg-base-300 rounded border border-base-300 overflow-hidden" style={{ maxHeight: "700px" }}>
+				{isLoading && <div className="flex items-center justify-center h-full text-base-content/60">Loading preview...</div>}
+				{error && <div className="flex items-center justify-center h-full text-error text-sm">{error}</div>}
 				{!isLoading && !error && canvas}
 			</div>
 		</div>

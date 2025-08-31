@@ -8,7 +8,7 @@ import { useRoadmap } from '@/hooks/useRoadmap';
 import { RoadmapFilters } from '@/components/molecules/RoadmapFilters/RoadmapFilters';
 import Badge from '@/components/atoms/Badge/Badge';
 import type { RoadmapItem } from '@/types/roadmap';
-import { CheckCircle, Clock, FileText, Flame, Zap, Lightbulb } from 'lucide-react';
+import { BarChart3, ChartColumn, Home, Palette, Shuffle } from 'lucide-react';
 
 export const Roadmap: React.FC = () => {
   const {
@@ -48,13 +48,13 @@ export const Roadmap: React.FC = () => {
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
       case 'high':
-        return <Flame size={16} />;
+        return <BarChart3 size={16} />;
       case 'medium':
-        return <Zap size={16} />;
+        return <Shuffle size={16} />;
       case 'low':
-        return <Lightbulb size={16} />;
+        return <Home size={16} />;
       default:
-        return <Lightbulb size={16} />;
+        return <Home size={16} />;
     }
   };
 
@@ -87,27 +87,27 @@ export const Roadmap: React.FC = () => {
           <h3 className="text-lg font-semibold mb-3 text-base-content">Legend</h3>
                      <div className="flex flex-wrap gap-4">
              <div className="flex items-center gap-2">
-               <CheckCircle size={20} className="text-success" />
+               <BarChart3 size={20} className="text-success" />
                <span className="text-base-content">Finished</span>
              </div>
              <div className="flex items-center gap-2">
-               <Clock size={20} className="text-warning" />
+               <ChartColumn size={20} className="text-warning" />
                <span className="text-base-content">In Progress</span>
              </div>
              <div className="flex items-center gap-2">
-               <FileText size={20} className="text-base-content/60" />
+               <Home size={20} className="text-base-content/60" />
                <span className="text-base-content">Planned</span>
              </div>
              <div className="flex items-center gap-2">
-               <Flame size={20} className="text-error" />
+               <Palette size={20} className="text-error" />
                <span className="text-base-content">High Priority</span>
              </div>
              <div className="flex items-center gap-2">
-               <Zap size={20} className="text-warning" />
+               <Shuffle size={20} className="text-warning" />
                <span className="text-base-content">Medium Priority</span>
              </div>
              <div className="flex items-center gap-2">
-               <Lightbulb size={20} className="text-success" />
+               <Home size={20} className="text-success" />
                <span className="text-base-content">Low Priority</span>
              </div>
            </div>

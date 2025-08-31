@@ -1,16 +1,11 @@
 // pages/BeatmapStats.tsx
 import type React from "react";
 import { 
-  Music, 
-  Package, 
-  Zap, 
-  Settings, 
-  Flame, 
-  Waves, 
-  Dumbbell,
-  RefreshCw,
-  Clock,
-  Hand
+  BarChart3, 
+  ChartColumn, 
+  Home, 
+  Palette, 
+  Shuffle
 } from "lucide-react";
 import { useBeatmapCount } from "@/hooks/useBeatmapCount";
 
@@ -73,7 +68,7 @@ const BeatmapStats: React.FC = () => {
           <div className="stats shadow">
             <div className="stat">
               <div className="stat-figure text-primary">
-                <Music size={32} />
+                                    <BarChart3 size={32} />
               </div>
               <div className="stat-title">Total Beatmaps</div>
               <div className="stat-value text-primary">{data.total_beatmaps.toLocaleString()}</div>
@@ -84,7 +79,7 @@ const BeatmapStats: React.FC = () => {
           <div className="stats shadow">
             <div className="stat">
               <div className="stat-figure text-secondary">
-                <Package size={32} />
+                                    <ChartColumn size={32} />
               </div>
               <div className="stat-title">Total Beatmapsets</div>
               <div className="stat-value text-secondary">{data.total_beatmapsets.toLocaleString()}</div>
@@ -97,7 +92,7 @@ const BeatmapStats: React.FC = () => {
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-2xl mb-6">
-              <Music className="text-accent" size={24} />
+                                <BarChart3 className="text-accent" size={24} />
               Répartition par Patterns
             </h2>
             
@@ -113,43 +108,43 @@ const BeatmapStats: React.FC = () => {
                     color: 'text-blue-400', 
                     bgColor: 'bg-blue-400/10', 
                     borderColor: 'border-blue-400/20',
-                    icon: <Zap size={20} className="text-blue-400" />
+                    icon: <Home size={20} className="text-blue-400" />
                   },
                   technical: { 
                     color: 'text-purple-400', 
                     bgColor: 'bg-purple-400/10', 
                     borderColor: 'border-purple-400/20',
-                    icon: <Settings size={20} className="text-purple-400" />
+                    icon: <Palette size={20} className="text-purple-400" />
                   },
                   chordjack: { 
                     color: 'text-red-400', 
                     bgColor: 'bg-red-400/10', 
                     borderColor: 'border-red-400/20',
-                    icon: <Flame size={20} className="text-red-400" />
+                    icon: <BarChart3 size={20} className="text-red-400" />
                   },
                   stream: { 
                     color: 'text-green-400', 
                     bgColor: 'bg-green-400/10', 
                     borderColor: 'border-green-400/20',
-                    icon: <Waves size={20} className="text-green-400" />
+                    icon: <ChartColumn size={20} className="text-green-400" />
                   },
                   stamina: { 
                     color: 'text-orange-400', 
                     bgColor: 'bg-orange-400/10', 
                     borderColor: 'border-orange-400/20',
-                    icon: <Dumbbell size={20} className="text-orange-400" />
+                    icon: <Shuffle size={20} className="text-orange-400" />
                   },
                   handstream: { 
                     color: 'text-cyan-400', 
                     bgColor: 'bg-cyan-400/10', 
                     borderColor: 'border-cyan-400/20',
-                    icon: <Hand size={20} className="text-cyan-400" />
+                    icon: <Palette size={20} className="text-cyan-400" />
                   },
                   jackspeed: { 
                     color: 'text-yellow-400', 
                     bgColor: 'bg-yellow-400/10', 
                     borderColor: 'border-yellow-400/20',
-                    icon: <Clock size={20} className="text-yellow-400" />
+                    icon: <Home size={20} className="text-yellow-400" />
                   },
                 };
 
@@ -196,7 +191,7 @@ const BeatmapStats: React.FC = () => {
             className="btn btn-outline btn-wide" 
             onClick={refetch}
           >
-            <RefreshCw size={16} className="mr-2" />
+            <Shuffle size={16} className="mr-2" />
             Actualiser les données
           </button>
         </div>

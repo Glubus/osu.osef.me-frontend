@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import type { HitObject } from "@/services/beatmapPreview/core/types";
+import { CANVAS_CONFIG } from "@/utils/constants/canvas";
 
 interface UseBeatmapPreviewProps {
 	mountRef: React.RefObject<HTMLDivElement | null>;
@@ -21,7 +22,7 @@ export const useBeatmapPreview = ({
 	progress,
 	totalTime,
 	scrollDirection,
-	lanes = 4,
+	lanes = CANVAS_CONFIG.LANE_COUNT,
 	onProgressChange,
 }: UseBeatmapPreviewProps) => {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -45,13 +46,13 @@ export const useBeatmapPreview = ({
 		if (!ctx) return;
 
 		// Simple canvas setup
-		canvas.width = 600;
-		canvas.height = 700;
+		canvas.width = CANVAS_CONFIG.WIDTH;
+		canvas.height = CANVAS_CONFIG.HEIGHT;
 
 		const canvasWidth = canvas.width;
 		const canvasHeight = canvas.height;
 		const laneWidth = canvasWidth / lanes;
-		const receptorY = scrollDirection === "down" ? canvasHeight - 50 : 50;
+		const receptorY = scrollDirection === "down" ? canvasHeight - CANVAS_CONFIG.RECEPTOR_OFFSET : CANVAS_CONFIG.RECEPTOR_OFFSET;
 
 		// Click handler for progress bar
 		const handleClick = (e: MouseEvent) => {
@@ -60,10 +61,10 @@ export const useBeatmapPreview = ({
 			const y = e.clientY - rect.top;
 
 			// Progress bar area
-			const barX = 10;
-			const barY = 30;
-			const barW = canvasWidth - 20;
-			const barH = 15;
+			const barX = CANVAS_CONFIG.PROGRESS_BAR.X;
+			const barY = CANVAS_CONFIG.PROGRESS_BAR.Y;
+			const barW = canvasWidth - CANVAS_CONFIG.PROGRESS_BAR.MARGIN;
+			const barH = CANVAS_CONFIG.PROGRESS_BAR.HEIGHT;
 
 			if (x >= barX && x <= barX + barW && y >= barY && y <= barY + barH) {
 				const newProgress = Math.max(0, Math.min(100, ((x - barX) / barW) * 100));
@@ -97,39 +98,48 @@ export const useBeatmapPreview = ({
 			// 2. Supprimer les notes qui ne sont plus visibles
 			visibleNotesRef.current = visibleNotesRef.current.filter(hit => {
 				if (hit.type === "hold" && hit.endTime) {
-					// Pour les LN: tant que leur fin n'est pas passée de plus de 500ms
+					// Pour les LN: tant que leur fin n'est pas passée de plus de NOTE_DISAPPEAR_DELAY ms
 					const endTimeDiff = hit.endTime - currentTimeMs;
-					const shouldKeep = endTimeDiff >= -500;
+					const shouldKeep = endTimeDiff >= -CANVAS_CONFIG.NOTE_DISAPPEAR_DELAY;
 					
-					if (!shouldKeep) {
-						console.log(`LN Removed: start=${hit.startTime}, end=${hit.endTime}, current=${Math.round(currentTimeMs)}, endDiff=${Math.round(endTimeDiff)}`);
-					}
 					
 					return shouldKeep;
 				} else {
-					// Pour les notes normales: tant qu'elles ne sont pas passées de plus de 500ms
+					// Pour les notes normales: tant qu'elles ne sont pas passées de plus de NOTE_DISAPPEAR_DELAY ms
 					const startTimeDiff = hit.startTime - currentTimeMs;
-					return startTimeDiff >= -500;
+					return startTimeDiff >= -CANVAS_CONFIG.NOTE_DISAPPEAR_DELAY;
 				}
 			});
 		};
 
+		// Performance optimization: Frame rate throttling
+		const FRAME_RATE = 60;
+		const FRAME_INTERVAL = 1000 / FRAME_RATE;
+		let lastFrameTime = 0;
+
 		// Animation loop
-		const animate = () => {
+		const animate = (currentFrameTime: number) => {
+			// Throttle frame rate
+			if (currentFrameTime - lastFrameTime < FRAME_INTERVAL) {
+				animationRef.current = requestAnimationFrame(animate);
+				return;
+			}
+			lastFrameTime = currentFrameTime;
+
 			// Clear
 			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-			// Constants pour cette frame
+			// Constants pour cette frame (memoized)
 			const travelTime = scrollSpeed * 1000;
-			const noteRadius = 45; // Plus grosses notes
-			const noteWidth = 90; // Plus large pour les hold notes
+			const noteRadius = CANVAS_CONFIG.NOTE_RADIUS;
+			const noteWidth = CANVAS_CONFIG.NOTE_WIDTH;
 
 			// Update queue
 			updateQueue();
 
 			// Draw lanes
-			ctx.strokeStyle = "#374151";
-			ctx.lineWidth = 1;
+			ctx.strokeStyle = CANVAS_CONFIG.COLORS.LANE_STROKE;
+			ctx.lineWidth = CANVAS_CONFIG.LINE_WEIGHTS.LANE;
 			for (let i = 1; i < lanes; i++) {
 				const x = i * laneWidth;
 				ctx.beginPath();
@@ -139,12 +149,12 @@ export const useBeatmapPreview = ({
 			}
 
 			// Draw receptors
-			ctx.strokeStyle = "#ffffff";
-			ctx.lineWidth = 3;
+			ctx.strokeStyle = CANVAS_CONFIG.COLORS.RECEPTOR_STROKE;
+			ctx.lineWidth = CANVAS_CONFIG.LINE_WEIGHTS.RECEPTOR;
 			for (let i = 0; i < lanes; i++) {
 				const x = i * laneWidth + laneWidth / 2;
 				ctx.beginPath();
-				ctx.arc(x, receptorY, 45, 0, 2 * Math.PI); // Même taille que les notes
+				ctx.arc(x, receptorY, CANVAS_CONFIG.RECEPTOR_RADIUS, 0, 2 * Math.PI);
 				ctx.stroke();
 			}
 
@@ -182,58 +192,58 @@ export const useBeatmapPreview = ({
 					
 					if (isVisible && rectHeight > 0) {
 						// Draw hold body
-						ctx.fillStyle = "#3b82f6";
+						ctx.fillStyle = CANVAS_CONFIG.COLORS.HOLD_NOTE_FILL;
 						ctx.fillRect(x - noteWidth/2, rectTop, noteWidth, rectHeight);
 						
-						ctx.strokeStyle = "#ffffff";
-						ctx.lineWidth = 2;
+						ctx.strokeStyle = CANVAS_CONFIG.COLORS.NOTE_STROKE;
+						ctx.lineWidth = CANVAS_CONFIG.LINE_WEIGHTS.NOTE;
 						ctx.strokeRect(x - noteWidth/2, rectTop, noteWidth, rectHeight);
 						
 						// Draw start note (seulement si visible)
 						if (y >= -noteRadius && y <= canvasHeight + noteRadius) {
-							ctx.fillStyle = "#ff6b35";
+							ctx.fillStyle = CANVAS_CONFIG.COLORS.NOTE_FILL;
 							ctx.beginPath();
 							ctx.arc(x, y, noteRadius, 0, 2 * Math.PI);
 							ctx.fill();
-							ctx.strokeStyle = "#ffffff";
-							ctx.lineWidth = 2;
+							ctx.strokeStyle = CANVAS_CONFIG.COLORS.NOTE_STROKE;
+							ctx.lineWidth = CANVAS_CONFIG.LINE_WEIGHTS.NOTE;
 							ctx.stroke();
 						}
 					}
 				} else {
 					// Draw regular note - seulement si visible
 					if (y >= -noteRadius && y <= canvasHeight + noteRadius) {
-						ctx.fillStyle = "#ff6b35";
+						ctx.fillStyle = CANVAS_CONFIG.COLORS.NOTE_FILL;
 						ctx.beginPath();
 						ctx.arc(x, y, noteRadius, 0, 2 * Math.PI);
 						ctx.fill();
-						ctx.strokeStyle = "#ffffff";
-						ctx.lineWidth = 2;
+						ctx.strokeStyle = CANVAS_CONFIG.COLORS.NOTE_STROKE;
+						ctx.lineWidth = CANVAS_CONFIG.LINE_WEIGHTS.NOTE;
 						ctx.stroke();
 					}
 				}
 			}
 
 			// Debug: show queue info
-			ctx.fillStyle = "#ffffff";
-			ctx.font = "12px Arial";
+			ctx.fillStyle = CANVAS_CONFIG.COLORS.TEXT;
+			ctx.font = `${CANVAS_CONFIG.UI.DEBUG_FONT_SIZE}px Arial`;
 			ctx.textAlign = "left";
-			ctx.fillText(`Visible: ${visibleNotesRef.current.length} | Queue: ${queueIndexRef.current}/${hitObjects.length} | Travel: ${Math.round(travelTime)}ms`, 10, canvasHeight - 10);
+			ctx.fillText(`Visible: ${visibleNotesRef.current.length} | Queue: ${queueIndexRef.current}/${hitObjects.length} | Travel: ${Math.round(travelTime)}ms`, CANVAS_CONFIG.UI.DEBUG_MARGIN, canvasHeight - CANVAS_CONFIG.UI.DEBUG_MARGIN);
 
 			// Draw progress bar
-			const barX = 10;
-			const barY = 30;
-			const barW = canvasWidth - 20;
-			const barH = 15;
+			const barX = CANVAS_CONFIG.PROGRESS_BAR.X;
+			const barY = CANVAS_CONFIG.PROGRESS_BAR.Y;
+			const barW = canvasWidth - CANVAS_CONFIG.PROGRESS_BAR.MARGIN;
+			const barH = CANVAS_CONFIG.PROGRESS_BAR.HEIGHT;
 
-			ctx.fillStyle = "#374151";
+			ctx.fillStyle = CANVAS_CONFIG.COLORS.PROGRESS_BAR_BG;
 			ctx.fillRect(barX, barY, barW, barH);
 
-			ctx.fillStyle = "#10b981";
+			ctx.fillStyle = CANVAS_CONFIG.COLORS.PROGRESS_BAR_FILL;
 			ctx.fillRect(barX, barY, (barW * progress) / 100, barH);
 
-			ctx.strokeStyle = "#ffffff";
-			ctx.lineWidth = 2;
+			ctx.strokeStyle = CANVAS_CONFIG.COLORS.TEXT;
+			ctx.lineWidth = CANVAS_CONFIG.LINE_WEIGHTS.PROGRESS_BAR;
 			ctx.strokeRect(barX, barY, barW, barH);
 
 			// Draw time
@@ -243,8 +253,8 @@ export const useBeatmapPreview = ({
 				return `${min}:${sec.toString().padStart(2, '0')}`;
 			};
 
-			ctx.fillStyle = "#ffffff";
-			ctx.font = "16px Arial";
+			ctx.fillStyle = CANVAS_CONFIG.COLORS.TEXT;
+			ctx.font = `${CANVAS_CONFIG.UI.TIME_FONT_SIZE}px Arial`;
 			ctx.textAlign = "center";
 			ctx.fillText(
 				`${formatTime(currentTime)} / ${formatTime(totalTime)}`,
@@ -255,7 +265,8 @@ export const useBeatmapPreview = ({
 			animationRef.current = requestAnimationFrame(animate);
 		};
 
-		animate();
+		// Start the animation loop
+		animationRef.current = requestAnimationFrame(animate);
 
 		return () => {
 			canvas.removeEventListener('click', handleClick);
