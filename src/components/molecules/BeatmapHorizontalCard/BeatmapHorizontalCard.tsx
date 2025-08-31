@@ -40,6 +40,21 @@ const getPatternShortcut = (pattern: string): string => {
   return shortcuts[pattern.toLowerCase()] || pattern;
 };
 
+// Fonction pour obtenir la couleur d'un pattern (correspondant aux couleurs de la page stats)
+const getPatternColor = (pattern: string): string => {
+  const colorMap: Record<string, string> = {
+    'jumpstream': 'blue',      // text-blue-400 dans stats
+    'technical': 'purple',     // text-purple-400 dans stats
+    'chordjack': 'red',        // text-red-400 dans stats
+    'stream': 'green',         // text-green-400 dans stats
+    'stamina': 'orange',       // text-orange-400 dans stats
+    'handstream': 'teal',      // couleur par défaut pour les patterns non définis
+    'jackspeed': 'yellow'      // couleur par défaut pour les patterns non définis
+  };
+  
+  return colorMap[pattern.toLowerCase()] || 'gray';
+};
+
 // Fonction pour déterminer le status de priorité
 const getPriorityStatus = (beatmaps: any[]): { status: string; color: string; icon: React.ReactNode } => {
   const statuses = beatmaps.map(m => m.beatmap.status);
@@ -170,7 +185,7 @@ const BeatmapHorizontalCard: React.FC<BeatmapCardProps> = ({ beatmapset }) => {
               {uniquePatterns.map((pattern, i) => (
                 <Badge
                   key={i}
-                  color="blue"
+                  color={getPatternColor(pattern) as any}
                   title={`Pattern: ${pattern}`}
                   outline={true}
                 >
