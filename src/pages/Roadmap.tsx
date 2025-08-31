@@ -8,7 +8,13 @@ import { useRoadmap } from '@/hooks/useRoadmap';
 import { RoadmapFilters } from '@/components/molecules/RoadmapFilters/RoadmapFilters';
 import Badge from '@/components/atoms/Badge/Badge';
 import type { RoadmapItem } from '@/types/roadmap';
-import { BarChart3, ChartColumn, Home, Palette, Shuffle } from 'lucide-react';
+import { icons } from 'lucide-react';
+
+const BarChart3 = icons.TrendingUp;
+const ChartColumn = icons.ChartColumn;
+const Home = icons.MapPin;
+const Palette = icons.Palette;
+const Shuffle = icons.Shuffle;
 
 export const Roadmap: React.FC = () => {
   const {

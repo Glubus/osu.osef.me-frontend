@@ -1,13 +1,18 @@
 // pages/BeatmapStats.tsx
 import type React from "react";
 import { 
-  BarChart3, 
-  ChartColumn, 
-  Home, 
-  Palette, 
-  Shuffle
+
+  icons, 
+
 } from "lucide-react";
 import { useBeatmapCount } from "@/hooks/useBeatmapCount";
+
+
+const BarChart3 = icons.TrendingUp;
+const ChartColumn = icons.ChartColumn;
+const Home = icons.MapPin;
+const Palette = icons.Palette;
+const Shuffle = icons.Shuffle;
 
 const BeatmapStats: React.FC = () => {
   const { data, loading, error, refetch } = useBeatmapCount();

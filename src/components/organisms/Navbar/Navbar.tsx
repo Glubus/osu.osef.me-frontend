@@ -1,14 +1,18 @@
 import type React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Shuffle, BarChart3, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { icons} from "lucide-react";
 import Button from "@/components/atoms/Button/Button";
 import ThemeManager from "@/components/organisms/ThemeManager/ThemeManager";
 
+
+const Home = icons.MapPin;
+const Roadmap = icons.Map;
+const Random = icons.Shuffle;
+const Stats = icons.TrendingUp;
+const Help = icons.CircleQuestionMark;
+
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const isHomePage = location.pathname === "/";
 
   return (
     <nav className="bg-base-200 border-b border-base-300">
@@ -44,7 +48,7 @@ const Navbar: React.FC = () => {
               style="outline"
               size="md"
             >
-              <Shuffle size={16} className="mr-2" />
+              <Random size={16} className="mr-2" />
               Random
             </Button>
             <Button
@@ -53,8 +57,17 @@ const Navbar: React.FC = () => {
               style="outline"
               size="md"
             >
-              <BarChart3 size={16} className="mr-2" />
+              <Stats size={16} className="mr-2" />
               Stats
+            </Button>
+            <Button
+              onClick={() => navigate("/help")}
+              color="secondary"
+              style="outline"
+              size="md"
+            >
+              <Help size={16} className="mr-2" />
+              Help
             </Button>
 
             {/* Theme Manager */}

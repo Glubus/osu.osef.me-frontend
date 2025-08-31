@@ -1,11 +1,14 @@
 import type React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { icons } from "lucide-react";
 import type { Filters } from "@/types/beatmap/short";
 import FilterSection from "@/components/molecules/FilterSection/FilterSection";
 import BeatmapGrid from "@/components/molecules/BeatmapGrid/BeatmapGrid";
 import Button from "@/components/atoms/Button/Button";
 import { useRandomBeatmaps } from "@/hooks/useRandomBeatmaps";
 import { useFilters } from "@/hooks/useFilters";
+
+const Shuffle = icons.Shuffle;
 
 const RandomBeatmapList: React.FC = () => {
   const { filters: savedFilters, updateFilters, resetFilters } = useFilters();
@@ -93,7 +96,8 @@ const RandomBeatmapList: React.FC = () => {
           color="secondary"
           size="sm"
         >
-          {loading ? 'Loading...' : '🎲 Reroll Beatmaps'}
+          <Shuffle size={16} className="mr-2" />
+          {loading ? 'Loading...' : 'Reroll Beatmaps'}
         </Button>
       </div>
       
