@@ -8,7 +8,9 @@ import {
   Flame, 
   Waves, 
   Dumbbell,
-  RefreshCw
+  RefreshCw,
+  Clock,
+  Hand
 } from "lucide-react";
 import { useBeatmapCount } from "@/hooks/useBeatmapCount";
 
@@ -55,7 +57,7 @@ const BeatmapStats: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-base-content mb-2">
@@ -99,9 +101,9 @@ const BeatmapStats: React.FC = () => {
               Répartition par Patterns
             </h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-              {/* Ordre fixe des patterns */}
-              {['jumpstream', 'technical', 'chordjack', 'stream', 'stamina'].map((pattern) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-4">
+              {/* Ordre fixe des patterns - tous les 7 patterns */}
+              {['technical', 'chordjack', 'stamina', 'jumpstream', 'stream', 'handstream', 'jackspeed'].map((pattern) => {
                 const count = data.patterns[pattern as keyof typeof data.patterns] || 0;
                 const percentage = ((count / data.total_beatmaps) * 100).toFixed(1);
                 
@@ -137,6 +139,18 @@ const BeatmapStats: React.FC = () => {
                     borderColor: 'border-orange-400/20',
                     icon: <Dumbbell size={20} className="text-orange-400" />
                   },
+                  handstream: { 
+                    color: 'text-cyan-400', 
+                    bgColor: 'bg-cyan-400/10', 
+                    borderColor: 'border-cyan-400/20',
+                    icon: <Hand size={20} className="text-cyan-400" />
+                  },
+                  jackspeed: { 
+                    color: 'text-yellow-400', 
+                    bgColor: 'bg-yellow-400/10', 
+                    borderColor: 'border-yellow-400/20',
+                    icon: <Clock size={20} className="text-yellow-400" />
+                  },
                 };
 
                 const config = patternConfig[pattern as keyof typeof patternConfig];
@@ -146,17 +160,17 @@ const BeatmapStats: React.FC = () => {
                     key={pattern}
                     className={`card ${config.bgColor} border ${config.borderColor} shadow-sm`}
                   >
-                    <div className="card-body p-4">
+                    <div className="card-body p-6">
                       <div className="flex items-center gap-2 mb-2">
                         {config.icon}
-                        <h3 className="font-semibold text-sm capitalize text-base-content">
+                        <h3 className="font-semibold text-base capitalize text-base-content">
                           {pattern}
                         </h3>
                       </div>
-                      <div className={`text-2xl font-bold ${config.color} mb-1`}>
+                      <div className={`text-3xl font-bold ${config.color} mb-2`}>
                         {count.toLocaleString()}
                       </div>
-                      <div className="text-xs text-base-content/60">
+                      <div className="text-sm text-base-content/60">
                         {percentage}% du total
                       </div>
                       

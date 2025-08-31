@@ -9,6 +9,8 @@ export interface BeatmapPatterns {
   chordjack: number;
   stream: number;
   stamina: number;
+  jackspeed: number;
+  handstream: number;
 }
 
 /**
