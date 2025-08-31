@@ -5,6 +5,7 @@ import BeatmapView from './pages/BeatmapView';
 import { Roadmap } from './pages/Roadmap';
 import RandomBeatmaps from './pages/RandomBeatmaps';
 import BeatmapListPage from './pages/BeatmapList';
+import BeatmapStats from './pages/BeatmapStats';
 import Navbar from './components/organisms/Navbar/Navbar';
 
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
             <Route path="/" element={<BeatmapListPage />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/random" element={<RandomBeatmaps />} />
+            <Route path="/stats" element={<BeatmapStats />} />
             <Route path="beatmapsets/:beatmapsetId" element={<BeatmapsetRedirect />} />
             <Route path="beatmapsets/:beatmapsetId/:beatmapId" element={<BeatmapView />} />
           </Routes>

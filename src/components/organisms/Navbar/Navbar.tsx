@@ -1,5 +1,6 @@
 import type React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Shuffle, BarChart3, ArrowLeft } from "lucide-react";
 import Button from "@/components/atoms/Button/Button";
 import ThemeManager from "@/components/organisms/ThemeManager/ThemeManager";
 
@@ -34,7 +35,17 @@ const Navbar: React.FC = () => {
               style="outline"
               size="md"
             >
-              🎲 Random
+              <Shuffle size={16} className="mr-2" />
+              Random
+            </Button>
+            <Button
+              onClick={() => navigate("/stats")}
+              color="secondary"
+              style="outline"
+              size="md"
+            >
+              <BarChart3 size={16} className="mr-2" />
+              Stats
             </Button>
             {!isHomePage && (
               <Button
@@ -43,7 +54,8 @@ const Navbar: React.FC = () => {
                 style="outline"
                 size="md"
               >
-                ← Back to list
+                <ArrowLeft size={16} className="mr-2" />
+                Back to list
               </Button>
             )}
 

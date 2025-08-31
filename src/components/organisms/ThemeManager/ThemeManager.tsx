@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import ThemeSwitcher from "@/components/atoms/ThemeSwitcher/ThemeSwitcher";
 
 const ThemeManager: React.FC = () => {
-  const [currentTheme, setCurrentTheme] = useState<string>("dark");
+  const [currentTheme, setCurrentTheme] = useState<string>("business");
 
   // Thèmes disponibles
   const themes = [
@@ -46,7 +46,7 @@ const ThemeManager: React.FC = () => {
       document.documentElement.setAttribute("data-theme", savedTheme);
     } else {
       // Si aucun thème sauvegardé, appliquer le thème par défaut
-      document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.setAttribute("data-theme", "business");
     }
   }, []);
 
