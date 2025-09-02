@@ -29,7 +29,18 @@ export const useRandomBeatmaps = (filters: Omit<Filters, 'page' | 'per_page'>) =
     setTimeout(() => {
       loadRandomBeatmaps();
     }, 0);
-  }, [filters.search_term, filters.overall_min, filters.overall_max, filters.selected_pattern, filters.pattern_min, filters.pattern_max]);
+  }, [
+    filters.search_term,
+    filters.overall_min,
+    filters.overall_max,
+    filters.selected_pattern,
+    filters.pattern_min,
+    filters.pattern_max,
+    filters.bpm_min,
+    filters.bpm_max,
+    filters.total_time_min,
+    filters.total_time_max,
+  ]);
 
   const loadRandomBeatmaps = useCallback(async () => {
     // Prevent multiple simultaneous calls

@@ -8,6 +8,10 @@ export interface Filters {
     selected_pattern?: string;
     pattern_min?: number;
     pattern_max?: number;
+    bpm_min?: number;
+    bpm_max?: number;
+    total_time_min?: number; // seconds
+    total_time_max?: number; // seconds
     page?: number;
     per_page?: number;
   }

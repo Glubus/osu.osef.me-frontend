@@ -14,6 +14,10 @@ const FiltersSchema = z.object({
   selected_pattern: z.string().trim().optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
   pattern_min: z.number().min(0).optional(),
   pattern_max: z.number().min(0).optional(),
+  bpm_min: z.number().min(0).optional(),
+  bpm_max: z.number().min(0).optional(),
+  total_time_min: z.number().int().min(0).optional(),
+  total_time_max: z.number().int().min(0).optional(),
 }).refine(
   (data) => !data.overall_min || !data.overall_max || data.overall_min <= data.overall_max,
   {
@@ -26,6 +30,18 @@ const FiltersSchema = z.object({
     message: "pattern_min doit être inférieur ou égal à pattern_max",
     path: ["pattern_max"],
   }
+).refine(
+  (data) => !data.bpm_min || !data.bpm_max || data.bpm_min <= data.bpm_max,
+  {
+    message: "bpm_min doit être inférieur ou égal à bpm_max",
+    path: ["bpm_max"],
+  }
+).refine(
+  (data) => !data.total_time_min || !data.total_time_max || data.total_time_min <= data.total_time_max,
+  {
+    message: "total_time_min doit être inférieur ou égal à total_time_max",
+    path: ["total_time_max"],
+  }
 );
 
 type ValidatedFilters = z.infer<typeof FiltersSchema>;
@@ -33,6 +49,8 @@ type ValidatedFilters = z.infer<typeof FiltersSchema>;
 const defaultFilters: ValidatedFilters = {
   page: 1,
   per_page: 100,
+  search_term: undefined,
+  selected_pattern: undefined,
 };
 
 /**

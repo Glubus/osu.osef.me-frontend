@@ -12,14 +12,22 @@ export const useBeatmapList = (filters: Filters) => {
     filters.overall_max,
     filters.selected_pattern,
     filters.pattern_min,
-    filters.pattern_max
+    filters.pattern_max,
+    filters.bpm_min,
+    filters.bpm_max,
+    filters.total_time_min,
+    filters.total_time_max
   ], [
     filters.search_term,
     filters.overall_min,
     filters.overall_max,
     filters.selected_pattern,
     filters.pattern_min,
-    filters.pattern_max
+    filters.pattern_max,
+    filters.bpm_min,
+    filters.bpm_max,
+    filters.total_time_min,
+    filters.total_time_max
   ]);
 
   const {

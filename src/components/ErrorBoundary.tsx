@@ -18,6 +18,7 @@ function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
         
         <h2 className="text-2xl font-bold text-base-content mb-4">
           Oops! Something went wrong
+          pnp
         </h2>
         
         <div className="bg-base-200 p-4 rounded-lg mb-6">

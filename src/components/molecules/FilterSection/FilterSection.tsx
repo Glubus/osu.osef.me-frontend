@@ -149,9 +149,65 @@ const FilterSection: React.FC<FilterSectionProps> = ({ filters, onFiltersChange,
           </div>
         )}
 
-        {/* Empty space when pattern is not selected */}
-        {!filters.selected_pattern && <div></div>}
-        {!filters.selected_pattern && <div></div>}
+        {/* BPM min */}
+        <div className="flex flex-col gap-1">
+          <LabelWithTooltip 
+            label="BPM min" 
+            tooltip="Minimum BPM (beats per minute)" 
+          />
+          <Input
+            id="bpm-min"
+            value={filters.bpm_min?.toString() || ""}
+            onChange={(value) => updateFilter("bpm_min", value ? Number(value) : undefined)}
+            placeholder="Min"
+            type="number"
+          />
+        </div>
+
+        {/* BPM max */}
+        <div className="flex flex-col gap-1">
+          <LabelWithTooltip 
+            label="BPM max" 
+            tooltip="Maximum BPM (beats per minute)" 
+          />
+          <Input
+            id="bpm-max"
+            value={filters.bpm_max?.toString() || ""}
+            onChange={(value) => updateFilter("bpm_max", value ? Number(value) : undefined)}
+            placeholder="Max"
+            type="number"
+          />
+        </div>
+
+        {/* Total time min (seconds) */}
+        <div className="flex flex-col gap-1">
+          <LabelWithTooltip 
+            label="Length min (s)" 
+            tooltip="Minimum song length in seconds" 
+          />
+          <Input
+            id="total-time-min"
+            value={filters.total_time_min?.toString() || ""}
+            onChange={(value) => updateFilter("total_time_min", value ? Number(value) : undefined)}
+            placeholder="Min (s)"
+            type="number"
+          />
+        </div>
+
+        {/* Total time max (seconds) */}
+        <div className="flex flex-col gap-1">
+          <LabelWithTooltip 
+            label="Length max (s)" 
+            tooltip="Maximum song length in seconds" 
+          />
+          <Input
+            id="total-time-max"
+            value={filters.total_time_max?.toString() || ""}
+            onChange={(value) => updateFilter("total_time_max", value ? Number(value) : undefined)}
+            placeholder="Max (s)"
+            type="number"
+          />
+        </div>
       </div>
     </div>
   );
