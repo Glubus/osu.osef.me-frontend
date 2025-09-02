@@ -85,17 +85,31 @@ const Help: React.FC = () => {
             <div className="bg-base-200 rounded-lg p-4 shadow-lg border border-base-300">
               <h4 className="text-md font-medium mb-3">Visual Example</h4>
               <div className="bg-base-300 rounded-lg p-4 text-center">
-                <div className="bg-base-100 rounded border-2 border-dashed border-base-content/20 p-6">
-                  <p className="text-base-content/60 mb-2">
-                    📹 GIF Preview
-                  </p>
-                  <p className="text-xs font-mono text-base-content/50 mb-2">
-                    {content.content.gif_url}
-                  </p>
-                  <p className="text-xs text-base-content/40">
+                <img 
+                  src={content.content.gif_url}
+                  alt={content.content.gif_description || "Pattern example"}
+                  className="w-full h-auto rounded-lg shadow-md"
+                  onError={(e) => {
+                    // Fallback si le GIF ne charge pas
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `
+                        <div class="bg-base-100 rounded border-2 border-dashed border-base-content/20 p-6">
+                          <p class="text-base-content/60 mb-2">📹 GIF Preview</p>
+                          <p class="text-xs font-mono text-base-content/50 mb-2">${content.content.gif_url}</p>
+                          <p class="text-xs text-base-content/40">${content.content.gif_description}</p>
+                        </div>
+                      `;
+                    }
+                  }}
+                />
+                {content.content.gif_description && (
+                  <p className="text-xs text-base-content/60 mt-2 text-center">
                     {content.content.gif_description}
                   </p>
-                </div>
+                )}
               </div>
             </div>
           </div>

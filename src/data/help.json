@@ -8,7 +8,7 @@
         "description": "Continuous single notes requiring finger independence and speed",
         "content": {
           "definition": "Stream patterns consist of continuous single notes played in rapid succession, typically requiring each finger to hit individual notes without chord formations.",
-          "gif_url": "/gifs/patterns/stream-example.gif",
+          "gif_url": "/gifs/patterns/stream.gif",
           "gif_description": "Example of stream pattern showing continuous single notes",
           "characteristics": [
             "Single notes only (no chords or not much)",
@@ -46,7 +46,7 @@
         "description": "Mix of single notes and 2-note chords in flowing patterns",
         "content": {
           "definition": "Jumpstream combines single notes with 2-note jumps (chords), creating flowing patterns that test both chord accuracy and single note speed.",
-          "gif_url": "/gifs/patterns/jumpstream-example.gif",
+          "gif_url": "/gifs/patterns/jumpstream.gif",
           "gif_description": "Example of jumpstream showing mix of single notes and 2-note chords",
           "characteristics": [
             "Mix of single notes and 2-note chords",
@@ -83,7 +83,7 @@
         "description": "Dense chord patterns requiring both hands simultaneously",
         "content": {
           "definition": "Handstream features dense patterns of 3+ note chords with single between them.",
-          "gif_url": "/gifs/patterns/handstream-example.gif",
+          "gif_url": "/gifs/patterns/handstream.gif",
           "gif_description": "Example of handstream showing dense 3+ note chord patterns",
           "characteristics": [
             "3+ note chords predominantly",
@@ -121,7 +121,7 @@
         "description": "Repetitive chord patterns testing consistency and stamina",
         "content": {
           "definition": "Chordjack patterns feature repetitive chord sequences, often with the same chord repeated multiple times, testing consistency and stamina.",
-          "gif_url": "/gifs/patterns/chordjack-example.gif",
+          "gif_url": "/gifs/patterns/chordjack.gif",
           "gif_description": "Example of chordjack showing repetitive chord patterns",
           "characteristics": [
             "Repetitive chord patterns",
@@ -159,6 +159,8 @@
         "description": "Single key repetition at high speeds",
         "content": {
           "definition": "Jackspeed involves rapid repetition of single keys, testing finger stamina and speed on individual fingers.",
+          "gif_url": "/gifs/patterns/jackspeed.gif",
+          "gif_description": "Example of jackspeed showing single key repetition at high speeds",
           "characteristics": [
             "Single key repetition",
             "High speed requirements",
@@ -196,6 +198,8 @@
         "description": "Long, endurance-focused patterns testing physical limits",
         "content": {
           "definition": "Stamina patterns are characterized by their length and sustained difficulty, testing physical endurance over extended periods.",
+          "gif_url": "/gifs/patterns/stamina.gif",
+          "gif_description": "Example of stamina showing extended pattern duration",
           "characteristics": [
             "Extended pattern duration",
             "Sustained difficulty",
@@ -232,6 +236,8 @@
         "description": "Complex patterns requiring precision and pattern recognition",
         "content": {
           "definition": "Technical patterns feature complex note arrangements that prioritize precision, pattern recognition, and skillful execution over raw speed.",
+          "gif_url": "/gifs/patterns/technical.gif",
+          "gif_description": "Example of technical showing complex note arrangements",
           "characteristics": [
             "Complex note arrangements",
             "Precision-focused gameplay",
