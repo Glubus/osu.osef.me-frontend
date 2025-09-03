@@ -9,7 +9,11 @@
     "preview": "rsbuild preview",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "fmt": "biome format --write .",
+    "fmt:check": "biome format ."
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
