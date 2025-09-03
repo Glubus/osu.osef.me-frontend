@@ -22,7 +22,7 @@ stages:          # List of stages for jobs, and their order of execution
 
 build-job:
   stage: build
-  image: node:20.11  # Ajouter l'image pour la cohérence
+  image: node:latest  # Ajouter l'image pour la cohérence
   before_script:
     - npm install -g pnpm
     - pnpm install --frozen-lockfile
@@ -30,11 +30,11 @@ build-job:
     - echo "Compiling the code..."
     - echo "Compile complete."
   tags:
-    - docker
+    - Docker
 
 unit-test-job:
   stage: test
-  image: node:20.11
+  image: node:latest
   before_script:
     - npm install -g pnpm
     - pnpm install --frozen-lockfile
@@ -43,26 +43,26 @@ unit-test-job:
     - sleep 60
     - echo "Code coverage is 90%"
   tags:
-    - docker
+    - Docker
 
 lint-test-job:   # This job also runs in the test stage.
   stage: test    # It can run at the same time as unit-test-job (in parallel).
-  image: node:20.11
+  image: node:latest
   before_script:
     - npm install -g pnpm
     - pnpm install --frozen-lockfile
   script:
     - pnpm lint
   tags:
-    - docker
+    - Docker
 
 fmt-test-job:
   stage: test    # It can run at the same time as unit-test-job (in parallel).
-  image: node:20.11
+  image: node:latest
   before_script:
     - npm install -g pnpm
     - pnpm install --frozen-lockfile
   script:
     - pnpm fmt:check
   tags:
-    - docker
+    - Docker
