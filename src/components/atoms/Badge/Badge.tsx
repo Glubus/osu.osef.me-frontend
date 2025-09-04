@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import type { BadgeProps } from "@/types/atoms/Badge";
 import { BADGE_COLOR_MAP } from "@/types/atoms/Badge";
 import Tooltip from "@/components/atoms/Tooltip/Tooltip";

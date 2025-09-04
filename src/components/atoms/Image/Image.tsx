@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import type { ImageProps } from "@/types/atoms/Image";
 
 export const Image: React.FC<ImageProps> = ({ src, alt, className }) => (

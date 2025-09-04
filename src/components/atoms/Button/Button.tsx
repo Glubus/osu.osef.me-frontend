@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import clsx from "clsx";
 import type { ButtonProps } from "@/types/atoms/Button";
 
