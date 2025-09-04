@@ -1,40 +1,57 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
 	"vcs": {
-		"enabled": true,
-		"clientKind": "git",
-		"useIgnoreFile": false
+	  "enabled": true,
+	  "clientKind": "git",
+	  "useIgnoreFile": false
 	},
 	"files": {
-		"ignoreUnknown": false,
-		"experimentalScannerIgnores": ["node_modules/**"]
+	  "ignoreUnknown": false,
+	  "experimentalScannerIgnores": [
+		"node_modules/**",
+		"dist/**",
+		"build/**",
+		".next/**"
+	  ]
 	},
 	"formatter": {
-		"enabled": true,
-		"indentStyle": "space",
-		"indentWidth": 2,
-		"lineWidth": 100
+	  "enabled": true,
+	  "indentStyle": "space",
+	  "indentWidth": 2,
+	  "lineWidth": 100
 	},
 	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"correctness": { "all": true },
-			"suspicious": { "all": true },
-			"performance": { "all": true }
+	  "enabled": true,
+	  "rules": {
+		"recommended": true,
+		"correctness": { "all": true },
+		"suspicious": { "all": true },
+		"performance": { "all": true },
+		"style": {
+		  "noUnusedVariables": "error",
+		  "useConsistentTypeImports": "error"
 		}
+	  }
 	},
 	"javascript": {
-		"formatter": {
-			"quoteStyle": "double"
-		}
+	  "formatter": {
+		"quoteStyle": "double",
+		"trailingComma": "all"
+	  }
+	},
+	"typescript": {
+	  "formatter": {
+		"quoteStyle": "double",
+		"trailingComma": "all"
+	  }
 	},
 	"assist": {
-		"enabled": true,
-		"actions": {
-			"source": {
-				"organizeImports": "on"
-			}
+	  "enabled": true,
+	  "actions": {
+		"source": {
+		  "organizeImports": "on"
 		}
+	  }
 	}
-}
+  }
+  
