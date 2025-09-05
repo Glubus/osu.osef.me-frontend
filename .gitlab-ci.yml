@@ -20,15 +20,23 @@ stages:          # List of stages for jobs, and their order of execution
   - build
   - test
 
+variables:
+  IMAGE_NAME: $HARBOR_REGISTRY_NO_PREFIX/$CI_PROJECT/osef.me-frontend:${CI_COMMIT_SHA}
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+
+image: 
+    name: sonarsource/sonar-scanner-cli:11
+    entrypoint: [""]
+
 build-job:
   stage: build
-  image: node:latest  # Ajouter l'image pour la cohérence
   before_script:
-    - npm install -g pnpm
-    - pnpm install --frozen-lockfile
+    - docker login -u $HARBOR_USER -p $HARBOR_TOKEN $HARBOR_REGISTRY
+    - docker info
   script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+    - "docker build -t $IMAGE_NAME ."
+    - "docker push $IMAGE_NAME"
   tags:
     - Docker
 
@@ -66,3 +74,23 @@ fmt-test-job:
     - Docker
 
 
+
+sonar-test-job:
+  stage: test
+  image: sonarsource/sonar-scanner-cli:11
+  cache:
+    policy: pull-push
+    key: "sonar-cache-$CI_COMMIT_REF_SLUG"
+    paths:
+      - "${SONAR_USER_HOME}/cache"
+      - sonar-scanner/
+  tags:
+    - Docker
+  script: 
+    - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}"
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == 'master'
+    - if: $CI_COMMIT_BRANCH == 'main'
+    - if: $CI_COMMIT_BRANCH == 'develop'
