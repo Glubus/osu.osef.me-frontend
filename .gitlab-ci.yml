@@ -19,7 +19,7 @@
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
-
+  - sonar
 variables:
   IMAGE_NAME: $HARBOR_REGISTRY_NO_PREFIX/$CI_PROJECT/osef.me-frontend:${CI_COMMIT_SHA}
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
@@ -75,8 +75,8 @@ fmt-test-job:
   tags:
     - Docker
 
-sonar-test-job:
-  stage: test
+sonar-job:
+  stage: sonar
   image: sonarsource/sonar-scanner-cli:11
   dependencies:
     - unit-test-job
@@ -89,6 +89,7 @@ sonar-test-job:
   tags:
     - Docker
   script: 
+    - cat junit.xml
     - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}"
   allow_failure: true
   rules:
