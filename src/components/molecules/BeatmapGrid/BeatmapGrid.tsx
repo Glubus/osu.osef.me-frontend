@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import type { BeatmapsetCompleteShort } from "@/types/beatmap/short";
 import BeatmapHorizontalCard from "@/components/molecules/BeatmapHorizontalCard/BeatmapHorizontalCard";
 
