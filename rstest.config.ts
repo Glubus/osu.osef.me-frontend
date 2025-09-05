@@ -2,5 +2,12 @@ import { defineConfig } from '@rstest/core';
 
 export default defineConfig({
   testEnvironment: 'jsdom', // or 'happy-dom'
-  reporters: [['junit', { outputPath: './junit.xml' }]],
+  reporters: [
+    ['junit', { 
+      outputPath: './junit.xml',
+      // Configuration pour éviter les caractères problématiques
+      includeConsoleOutput: false,
+      usePathForSuiteName: true
+    }]
+  ],
 });
