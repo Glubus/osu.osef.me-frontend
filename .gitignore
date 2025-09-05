@@ -20,4 +20,4 @@ dist/
 # Environment variables
 .env
 
-ANALYSIS_REPORT.md
+junit.xml

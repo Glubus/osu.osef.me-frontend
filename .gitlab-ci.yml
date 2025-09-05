@@ -44,6 +44,12 @@ unit-test-job:
     - pnpm install --frozen-lockfile
   script:
     - pnpm test
+  artifacts:
+    reports:
+      junit: junit.xml
+    paths:
+      - junit.xml
+    expire_in: 1 hour
   tags:
     - Docker
 
@@ -72,6 +78,8 @@ fmt-test-job:
 sonar-test-job:
   stage: test
   image: sonarsource/sonar-scanner-cli:11
+  dependencies:
+    - unit-test-job
   cache:
     policy: pull-push
     key: "sonar-cache-$CI_COMMIT_REF_SLUG"
