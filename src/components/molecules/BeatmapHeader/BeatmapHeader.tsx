@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import { Image } from "@/components/atoms/Image/Image";
 import Button from "@/components/atoms/Button/Button";
 import Badge from "@/components/atoms/Badge/Badge";
