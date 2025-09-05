@@ -89,7 +89,6 @@ sonar-job:
   tags:
     - Docker
   script: 
-    - cat junit.xml
     - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}"
   allow_failure: true
   rules:

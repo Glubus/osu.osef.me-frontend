@@ -5,7 +5,7 @@ export default defineConfig({
   reporters: [
     ['junit', { 
       outputPath: './junit.xml',
-      // Configuration pour éviter les caractères problématiques
+
       includeConsoleOutput: false,
       usePathForSuiteName: true
     }]

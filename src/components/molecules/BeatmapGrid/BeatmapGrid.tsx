@@ -7,7 +7,6 @@ export interface BeatmapGridProps {
   loading?: boolean;
   loadingMore?: boolean;
   hasMore?: boolean;
-  onLoadMore?: () => void;
   emptyMessage?: string;
   loadingMessage?: string;
   loadingMoreMessage?: string;
@@ -19,7 +18,6 @@ const BeatmapGrid: React.FC<BeatmapGridProps> = ({
   loading = false,
   loadingMore = false,
   hasMore = false,
-  onLoadMore,
   emptyMessage = "No beatmaps found with these filters.",
   loadingMessage = "Loading beatmaps...",
   loadingMoreMessage = "Loading more beatmaps...",
