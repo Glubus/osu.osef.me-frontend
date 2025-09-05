@@ -8,7 +8,7 @@ const STORAGE_KEY = "beatmap-filters";
 const FiltersSchema = z.object({
   page: z.number().int().min(1).default(1),
   per_page: z.number().int().min(1).max(1000).default(100),
-  search_term: z.string().trim().optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
+  search_term: z.string().optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
   overall_min: z.number().min(0).max(50).optional(),
   overall_max: z.number().min(0).max(50).optional(),
   selected_pattern: z.string().trim().optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
@@ -115,10 +115,35 @@ export const useFilters = () => {
     setFilters(loadedFilters);
   }, [loadFiltersFromStorage]);
 
-  // Mettre à jour les filtres avec validation
+  // Mettre à jour les filtres avec validation et ajustement automatique
   const updateFilters = useCallback((newFilters: Filters) => {
-    // Valider les nouveaux filtres
-    const validationResult = FiltersSchema.safeParse(newFilters);
+    // Ajustement automatique des valeurs
+    const adjustedFilters = { ...newFilters };
+    
+    // Limiter les valeurs overall à 50 maximum
+    if (adjustedFilters.overall_min && adjustedFilters.overall_min > 50) {
+      adjustedFilters.overall_min = 50;
+    }
+    if (adjustedFilters.overall_max && adjustedFilters.overall_max > 50) {
+      adjustedFilters.overall_max = 50;
+    }
+    
+    // Ajustement automatique : si min > max, on met max = min
+    if (adjustedFilters.overall_min && adjustedFilters.overall_max && adjustedFilters.overall_min > adjustedFilters.overall_max) {
+      adjustedFilters.overall_max = adjustedFilters.overall_min;
+    }
+    if (adjustedFilters.pattern_min && adjustedFilters.pattern_max && adjustedFilters.pattern_min > adjustedFilters.pattern_max) {
+      adjustedFilters.pattern_max = adjustedFilters.pattern_min;
+    }
+    if (adjustedFilters.bpm_min && adjustedFilters.bpm_max && adjustedFilters.bpm_min > adjustedFilters.bpm_max) {
+      adjustedFilters.bpm_max = adjustedFilters.bpm_min;
+    }
+    if (adjustedFilters.total_time_min && adjustedFilters.total_time_max && adjustedFilters.total_time_min > adjustedFilters.total_time_max) {
+      adjustedFilters.total_time_max = adjustedFilters.total_time_min;
+    }
+    
+    // Valider les filtres ajustés
+    const validationResult = FiltersSchema.safeParse(adjustedFilters);
     
     if (validationResult.success) {
       const validatedFilters = validationResult.data;

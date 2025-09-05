@@ -8,3 +8,5 @@ export const Image: React.FC<ImageProps> = ({ src, alt, className }) => (
 		className={`w-full h-full object-cover ${className || ""}`}
 	/>
 );
+
+export default Image;

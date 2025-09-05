@@ -1,5 +1,5 @@
-// src/components/atoms/CustomTooltip.tsx
-import type React from "react";
+// src/components/atoms/ChartsToolTip.tsx
+import React from "react";
 
 interface ChartsTooltipProps {
   active?: boolean;
@@ -19,3 +19,4 @@ export const ChartsTooltip: React.FC<ChartsTooltipProps> = ({ active, payload, l
   return null;
 };
 
+export default ChartsTooltip;
