@@ -113,7 +113,7 @@ describe('PreviewSettings Component', () => {
     render(<PreviewSettings {...defaultProps} onSettingChange={mockOnSettingChange} />);
     
     const noteTypeSelect = screen.getByDisplayValue('Circle');
-    await user.selectOptions(noteTypeSelect, 'arrow');
+    await user.selectOptions(noteTypeSelect, 'rectangle');
     
     expect(settingChanged).toBe(true);
   });
@@ -151,7 +151,7 @@ describe('PreviewSettings Component', () => {
   test('displays current settings values', () => {
     const customSettings: BeatmapPreviewSettings = {
       scrollDirection: 'down',
-      noteType: 'arrow',
+      noteType: 'rectangle',
       noteColor: '#00ff00',
       lnColor: '#0000ff',
       progressBarPosition: 'top'
@@ -160,7 +160,7 @@ describe('PreviewSettings Component', () => {
     render(<PreviewSettings {...defaultProps} settings={customSettings} />);
     
     expect(screen.getByDisplayValue('Downscroll')).toBeDefined();
-    expect(screen.getByDisplayValue('Arrow')).toBeDefined();
+    expect(screen.getByDisplayValue('Rectangle')).toBeDefined();
     expect(screen.getByDisplayValue('#00ff00')).toBeDefined();
     expect(screen.getByDisplayValue('#0000ff')).toBeDefined();
     expect(screen.getByDisplayValue('Top')).toBeDefined();

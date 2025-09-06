@@ -28,7 +28,7 @@ const loadSettings = (): BeatmapPreviewSettings => {
 			return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
 		}
 	} catch (error) {
-		console.error("Failed to load preview settings:", error);
+		// Silently handle error and return defaults
 	}
 	return DEFAULT_SETTINGS;
 };
@@ -38,7 +38,7 @@ const saveSettings = (settings: BeatmapPreviewSettings) => {
 	try {
 		localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
 	} catch (error) {
-		console.error("Failed to save preview settings:", error);
+		// Silently handle error
 	}
 };
 
