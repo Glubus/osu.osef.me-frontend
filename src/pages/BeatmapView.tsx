@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useBeatmapset } from "@/hooks/useBeatmapset";
+import { useBeatmapset } from "@/hooks";
 import BeatmapMSDView from "@/components/organisms/BeatmapMSDView/BeatmapMSDView";
-import BeatmapHeader from "@/components/molecules/BeatmapHeader/BeatmapHeader";
-import BeatmapPreview from "@/components/molecules/BeatmapPreview/BeatmapPreview";
+import BeatmapHeader from "@/components/organisms/BeatmapHeader/BeatmapHeader";
+import BeatmapPreview from "@/components/organisms/BeatmapPreview/BeatmapPreview";
 
 const BeatmapView = () => {
   const { beatmapsetId, beatmapId } = useParams();

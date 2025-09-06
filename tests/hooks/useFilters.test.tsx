@@ -1,6 +1,6 @@
 import { expect, test, describe, afterEach } from '@rstest/core';
 import { renderHook, act } from '@testing-library/react';
-import { useFilters } from '../../src/hooks/useFilters';
+import { useFilters } from '../../src/hooks';
 import type { Filters } from '../../src/types/beatmap/short';
 
 describe('useFilters Hook', () => {

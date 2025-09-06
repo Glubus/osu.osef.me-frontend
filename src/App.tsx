@@ -2,7 +2,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Suspense, lazy } from 'react';
-import Navbar from './components/organisms/Navbar/Navbar';
+import Navbar from './components/templates/Navbar';
 import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy load route components for better bundle splitting

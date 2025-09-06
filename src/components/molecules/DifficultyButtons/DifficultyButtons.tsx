@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import type { BeatmapCompleteExtended } from "@/types/beatmap/extended";
 import Badge from "@/components/atoms/Badge/Badge";

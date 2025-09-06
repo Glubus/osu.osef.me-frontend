@@ -4,7 +4,7 @@ import {
   VerticalTimelineElement,
 } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
-import { useRoadmap } from '@/hooks/useRoadmap';
+import { useRoadmap } from '@/hooks';
 import { RoadmapFilters } from '@/components/molecules/RoadmapFilters/RoadmapFilters';
 import Badge from '@/components/atoms/Badge/Badge';
 import type { RoadmapItem } from '@/types/roadmap';
@@ -122,7 +122,7 @@ export const Roadmap: React.FC = () => {
                 {/* Timeline */}
         <div className="bg-base-200 rounded-lg p-6">
           <VerticalTimeline>
-            {roadmap.map((item) => (
+            {roadmap.map((item ) => (
               <VerticalTimelineElement
                 key={item.id}
                 className="vertical-timeline-element--work"

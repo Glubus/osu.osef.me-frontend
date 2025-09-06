@@ -1,5 +1,7 @@
 import type React from "react";
-import { Palette } from "lucide-react";
+import { icons } from "lucide-react";
+
+const Palette = icons.Palette;
 
 export interface ThemeSwitcherProps {
   currentTheme: string;

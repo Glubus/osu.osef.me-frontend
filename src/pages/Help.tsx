@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { icons } from "lucide-react";
-import { useHelpContent } from "@/hooks/useHelpContent";
+import { useHelpContent } from "@/hooks";
 
 const ChevronRight = icons.ChevronRight;
 const ChevronDown = icons.ChevronDown;

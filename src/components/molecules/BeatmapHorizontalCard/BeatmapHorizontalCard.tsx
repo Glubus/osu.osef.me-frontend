@@ -1,6 +1,6 @@
 import React from "react";
 import type { BeatmapsetCompleteShort } from "@/types/beatmap/short";
-import { useBeatmapHorizontalCard } from "@/hooks/molecules/useBeatmapHorizontalCard";
+import { useBeatmapHorizontalCard } from "@/hooks";
 import BeatmapCover from "./BeatmapCover/BeatmapCover";
 import BeatmapInfo from "./BeatmapInfo/BeatmapInfo";
 import BeatmapActions from "./BeatmapActions/BeatmapActions";

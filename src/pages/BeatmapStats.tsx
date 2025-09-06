@@ -5,7 +5,7 @@ import {
   icons, 
 
 } from "lucide-react";
-import { useBeatmapCount } from "@/hooks/useBeatmapCount";
+import { useBeatmapCount } from "@/hooks";
 
 
 const BarChart3 = icons.TrendingUp;

@@ -2,7 +2,7 @@ import React from 'react';
 import { expect, test, describe, afterEach } from '@rstest/core';
 import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import FilterSection from '../../src/components/molecules/FilterSection/FilterSection';
+import FilterSection from '../../src/components/organisms/FilterSection/FilterSection';
 import type { Filters } from '../../src/types/beatmap/short';
 
 describe('FilterSection Component', () => {

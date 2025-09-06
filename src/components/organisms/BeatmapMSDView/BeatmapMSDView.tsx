@@ -4,7 +4,7 @@ import type { MSDExtended } from "@/types/beatmap/extended";
 import MSDRadarChart from "@/components/molecules/MSDRadarCharts/MSDRadarChart";
 import MSDRatesLineChart from "@/components/molecules/MSDRatesLineChart/MSDRatesLineChart";
 import RateSelector from "@/components/molecules/RateSelector/RateSelector";
-import { useMSD } from "@/hooks/useMSD";
+import { useMSD } from "@/hooks";
 
 export interface BeatmapMSDViewProps {
   msdRates: MSDExtended[] | undefined;

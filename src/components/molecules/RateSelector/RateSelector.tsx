@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import Select, { type SelectOption } from "@/components/atoms/Select/Select";
 
 export interface RateSelectorProps {
