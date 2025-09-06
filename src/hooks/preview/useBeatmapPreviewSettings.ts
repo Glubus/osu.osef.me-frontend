@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 export interface BeatmapPreviewSettings {
 	scrollDirection: "up" | "down";
-	noteType: "circle" | "arrow" | "rectangle" | "diamond";
+	noteType: "circle" | "rectangle" | "diamond";
 	noteColor: string;
 	lnColor: string;
 	progressBarPosition: "top" | "bottom";

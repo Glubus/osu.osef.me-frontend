@@ -12,6 +12,12 @@ interface UseBeatmapPreviewProps {
 	scrollDirection: "up" | "down";
 	lanes?: number;
 	onProgressChange?: (progress: number) => void;
+		settings?: {
+			noteType: "circle" | "rectangle" | "diamond";
+			noteColor: string;
+			lnColor: string;
+			progressBarPosition: "top" | "bottom";
+		};
 }
 
 export const useBeatmapPreview = ({
@@ -24,6 +30,7 @@ export const useBeatmapPreview = ({
 	scrollDirection,
 	lanes = CANVAS_CONFIG.LANE_COUNT,
 	onProgressChange,
+	settings,
 }: UseBeatmapPreviewProps) => {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const animationRef = useRef<number | null>(null);
@@ -129,10 +136,50 @@ export const useBeatmapPreview = ({
 			// Clear
 			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-			// Constants pour cette frame (memoized)
-			const travelTime = scrollSpeed * 1000;
-			const noteRadius = CANVAS_CONFIG.NOTE_RADIUS;
-			const noteWidth = CANVAS_CONFIG.NOTE_WIDTH;
+		// Constants pour cette frame (memoized)
+		const travelTime = scrollSpeed * 1000;
+		const noteRadius = CANVAS_CONFIG.NOTE_RADIUS;
+		const noteWidth = CANVAS_CONFIG.NOTE_WIDTH;
+		
+		// Use settings or fallback to defaults
+		const noteType = settings?.noteType || "circle";
+		const noteColor = settings?.noteColor || CANVAS_CONFIG.COLORS.NOTE_FILL;
+		const lnColor = settings?.lnColor || CANVAS_CONFIG.COLORS.HOLD_NOTE_FILL;
+		const progressBarPosition = settings?.progressBarPosition || "bottom";
+
+		// Helper function to draw different note types
+		const drawNote = (x: number, y: number, type: string) => {
+			ctx.fillStyle = noteColor;
+			ctx.strokeStyle = CANVAS_CONFIG.COLORS.NOTE_STROKE;
+			ctx.lineWidth = CANVAS_CONFIG.LINE_WEIGHTS.NOTE;
+			
+			switch (type) {
+				case "circle":
+					ctx.beginPath();
+					ctx.arc(x, y, noteRadius, 0, 2 * Math.PI);
+					ctx.fill();
+					ctx.stroke();
+					break;
+				case "rectangle":
+					// Rectangle: prend toute la largeur de la lane, plus fin
+					const laneWidth = canvasWidth / lanes;
+					const rectWidth = laneWidth * 0.9; // 90% de la largeur de la lane
+					const rectHeight = noteRadius * 0.6; // Plus fin
+					ctx.fillRect(x - rectWidth/2, y - rectHeight/2, rectWidth, rectHeight);
+					ctx.strokeRect(x - rectWidth/2, y - rectHeight/2, rectWidth, rectHeight);
+					break;
+				case "diamond":
+					ctx.beginPath();
+					ctx.moveTo(x, y - noteRadius);
+					ctx.lineTo(x + noteRadius, y);
+					ctx.lineTo(x, y + noteRadius);
+					ctx.lineTo(x - noteRadius, y);
+					ctx.closePath();
+					ctx.fill();
+					ctx.stroke();
+					break;
+			}
+		};
 
 			// Update queue
 			updateQueue();
@@ -192,7 +239,7 @@ export const useBeatmapPreview = ({
 					
 					if (isVisible && rectHeight > 0) {
 						// Draw hold body
-						ctx.fillStyle = CANVAS_CONFIG.COLORS.HOLD_NOTE_FILL;
+						ctx.fillStyle = lnColor;
 						ctx.fillRect(x - noteWidth/2, rectTop, noteWidth, rectHeight);
 						
 						ctx.strokeStyle = CANVAS_CONFIG.COLORS.NOTE_STROKE;
@@ -201,25 +248,13 @@ export const useBeatmapPreview = ({
 						
 						// Draw start note (seulement si visible)
 						if (y >= -noteRadius && y <= canvasHeight + noteRadius) {
-							ctx.fillStyle = CANVAS_CONFIG.COLORS.NOTE_FILL;
-							ctx.beginPath();
-							ctx.arc(x, y, noteRadius, 0, 2 * Math.PI);
-							ctx.fill();
-							ctx.strokeStyle = CANVAS_CONFIG.COLORS.NOTE_STROKE;
-							ctx.lineWidth = CANVAS_CONFIG.LINE_WEIGHTS.NOTE;
-							ctx.stroke();
+							drawNote(x, y, noteType);
 						}
 					}
 				} else {
 					// Draw regular note - seulement si visible
 					if (y >= -noteRadius && y <= canvasHeight + noteRadius) {
-						ctx.fillStyle = CANVAS_CONFIG.COLORS.NOTE_FILL;
-						ctx.beginPath();
-						ctx.arc(x, y, noteRadius, 0, 2 * Math.PI);
-						ctx.fill();
-						ctx.strokeStyle = CANVAS_CONFIG.COLORS.NOTE_STROKE;
-						ctx.lineWidth = CANVAS_CONFIG.LINE_WEIGHTS.NOTE;
-						ctx.stroke();
+						drawNote(x, y, noteType);
 					}
 				}
 			}
@@ -232,7 +267,7 @@ export const useBeatmapPreview = ({
 
 			// Draw progress bar
 			const barX = CANVAS_CONFIG.PROGRESS_BAR.X;
-			const barY = CANVAS_CONFIG.PROGRESS_BAR.Y;
+			const barY = progressBarPosition === "top" ? CANVAS_CONFIG.PROGRESS_BAR.Y : canvasHeight - CANVAS_CONFIG.PROGRESS_BAR.Y - CANVAS_CONFIG.PROGRESS_BAR.HEIGHT;
 			const barW = canvasWidth - CANVAS_CONFIG.PROGRESS_BAR.MARGIN;
 			const barH = CANVAS_CONFIG.PROGRESS_BAR.HEIGHT;
 
@@ -274,7 +309,7 @@ export const useBeatmapPreview = ({
 				cancelAnimationFrame(animationRef.current);
 			}
 		};
-	}, [hitObjects, scrollSpeed, currentTime, progress, totalTime, scrollDirection, lanes, onProgressChange]);
+	}, [hitObjects, scrollSpeed, currentTime, progress, totalTime, scrollDirection, lanes, onProgressChange, settings]);
 
 	return (
 		<canvas

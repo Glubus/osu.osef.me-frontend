@@ -18,9 +18,17 @@ const Help = lazy(() => import('./pages/Help'));
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 2,
+      retry: (failureCount, error: any) => {
+        // Ne pas retry sur les erreurs 4xx (client errors)
+        if (error?.response?.status >= 400 && error?.response?.status < 500) {
+          return false;
+        }
+        return failureCount < 2;
+      },
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes (remplace cacheTime)
+      refetchOnWindowFocus: false, // Éviter les refetch inutiles
+      refetchOnReconnect: true, // Refetch quand la connexion revient
     },
   },
 });

@@ -10,19 +10,33 @@ export const useBeatmapPreviewState = (totalDuration: number) => {
 	useEffect(() => {
 		if (!isPlaying) return;
 
-		const interval = setInterval(() => {
+		let lastTime = performance.now();
+		let animationId: number;
+
+		const updateTime = (currentTime: number) => {
+			const deltaTime = currentTime - lastTime;
+			lastTime = currentTime;
+
 			setCurrentTime(prev => {
 				const duration = totalDuration || 60000;
-				const newTime = prev + 16;
+				const newTime = prev + deltaTime;
 				if (newTime >= duration) {
 					setIsPlaying(false);
 					return duration;
 				}
 				return newTime;
 			});
-		}, 16);
 
-		return () => clearInterval(interval);
+			animationId = requestAnimationFrame(updateTime);
+		};
+
+		animationId = requestAnimationFrame(updateTime);
+
+		return () => {
+			if (animationId) {
+				cancelAnimationFrame(animationId);
+			}
+		};
 	}, [isPlaying, totalDuration]);
 
 	// Mettre à jour la progression

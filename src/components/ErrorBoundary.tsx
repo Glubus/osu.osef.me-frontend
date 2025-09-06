@@ -18,7 +18,6 @@ function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
         
         <h2 className="text-2xl font-bold text-base-content mb-4">
           Oops! Something went wrong
-          pnp
         </h2>
         
         <div className="bg-base-200 p-4 rounded-lg mb-6">
@@ -62,12 +61,25 @@ interface ErrorBoundaryProps {
 }
 
 const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children, onError }) => {
+  const handleError = (error: Error, errorInfo: ErrorInfo) => {
+    // Log error to console in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('ErrorBoundary caught an error:', error, errorInfo);
+    }
+    
+    // Call custom error handler if provided
+    onError?.(error, errorInfo);
+    
+    // Optional: Send error to monitoring service in production
+    // Example: Sentry.captureException(error, { extra: errorInfo });
+  };
+
   return (
     <ReactErrorBoundary
       FallbackComponent={ErrorFallback}
-      onError={onError}
+      onError={handleError}
       onReset={() => {
-        // Optional: clean up application state
+        // Clean up application state and reload
         window.location.reload();
       }}
     >

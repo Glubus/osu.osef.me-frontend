@@ -48,7 +48,6 @@ const PreviewSettings: React.FC<PreviewSettingsProps> = ({
 						className="select select-bordered w-full select-sm"
 					>
 						<option value="circle">Circle</option>
-						<option value="arrow">Arrow</option>
 						<option value="rectangle">Rectangle</option>
 						<option value="diamond">Diamond</option>
 					</select>

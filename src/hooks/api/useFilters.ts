@@ -117,30 +117,36 @@ export const useFilters = () => {
 
   // Mettre à jour les filtres avec validation et ajustement automatique
   const updateFilters = useCallback((newFilters: Filters) => {
-    // Ajustement automatique des valeurs
-    const adjustedFilters = { ...newFilters };
+    // Ajustement automatique des valeurs avec une fonction utilitaire
+    const adjustFilters = (filters: Filters): Filters => {
+      const adjusted = { ...filters };
+      
+      // Limiter les valeurs overall à 50 maximum
+      if (adjusted.overall_min && adjusted.overall_min > 50) {
+        adjusted.overall_min = 50;
+      }
+      if (adjusted.overall_max && adjusted.overall_max > 50) {
+        adjusted.overall_max = 50;
+      }
+      
+      // Ajustement automatique : si min > max, on met max = min
+      const adjustMinMax = (minKey: keyof Filters, maxKey: keyof Filters) => {
+        const min = adjusted[minKey] as number | undefined;
+        const max = adjusted[maxKey] as number | undefined;
+        if (min && max && min > max) {
+          (adjusted as any)[maxKey] = min;
+        }
+      };
+      
+      adjustMinMax('overall_min', 'overall_max');
+      adjustMinMax('pattern_min', 'pattern_max');
+      adjustMinMax('bpm_min', 'bpm_max');
+      adjustMinMax('total_time_min', 'total_time_max');
+      
+      return adjusted;
+    };
     
-    // Limiter les valeurs overall à 50 maximum
-    if (adjustedFilters.overall_min && adjustedFilters.overall_min > 50) {
-      adjustedFilters.overall_min = 50;
-    }
-    if (adjustedFilters.overall_max && adjustedFilters.overall_max > 50) {
-      adjustedFilters.overall_max = 50;
-    }
-    
-    // Ajustement automatique : si min > max, on met max = min
-    if (adjustedFilters.overall_min && adjustedFilters.overall_max && adjustedFilters.overall_min > adjustedFilters.overall_max) {
-      adjustedFilters.overall_max = adjustedFilters.overall_min;
-    }
-    if (adjustedFilters.pattern_min && adjustedFilters.pattern_max && adjustedFilters.pattern_min > adjustedFilters.pattern_max) {
-      adjustedFilters.pattern_max = adjustedFilters.pattern_min;
-    }
-    if (adjustedFilters.bpm_min && adjustedFilters.bpm_max && adjustedFilters.bpm_min > adjustedFilters.bpm_max) {
-      adjustedFilters.bpm_max = adjustedFilters.bpm_min;
-    }
-    if (adjustedFilters.total_time_min && adjustedFilters.total_time_max && adjustedFilters.total_time_min > adjustedFilters.total_time_max) {
-      adjustedFilters.total_time_max = adjustedFilters.total_time_min;
-    }
+    const adjustedFilters = adjustFilters(newFilters);
     
     // Valider les filtres ajustés
     const validationResult = FiltersSchema.safeParse(adjustedFilters);

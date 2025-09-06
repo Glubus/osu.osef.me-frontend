@@ -105,6 +105,12 @@ const BeatmapPreview: React.FC<BeatmapPreviewProps> = ({ beatmapId }) => {
 		scrollDirection: settings.scrollDirection,
 		lanes: 4,
 		onProgressChange: handleProgressChange,
+		settings: {
+			noteType: settings.noteType,
+			noteColor: settings.noteColor,
+			lnColor: settings.lnColor,
+			progressBarPosition: settings.progressBarPosition,
+		},
 	});
 
 
