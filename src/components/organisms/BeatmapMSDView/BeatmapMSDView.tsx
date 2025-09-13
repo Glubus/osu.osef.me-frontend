@@ -2,8 +2,8 @@ import type React from "react";
 import { memo } from "react";
 import type { MSDExtended } from "@/types/beatmap/extended";
 import MSDRadarChart from "@/components/molecules/MSDRadarCharts/MSDRadarChart";
-import MSDRatesLineChart from "@/components/molecules/MSDRatesLineChart/MSDRatesLineChart";
 import RateSelector from "@/components/molecules/RateSelector/RateSelector";
+import Leaderboard from "@/components/organisms/Leaderboard";
 import { useMSD } from "@/hooks";
 
 export interface BeatmapMSDViewProps {
@@ -41,13 +41,9 @@ const BeatmapMSDView: React.FC<BeatmapMSDViewProps> = memo(({
       </div>
       
       <MSDRadarChart data={radarChartData} primaryColor={chartPrimaryColor} />
+      
       <div className="mt-4">
-        <h3 className="text-md font-semibold mb-2">Rate evolution</h3>
-        {msdRates && msdRates.length > 0 ? (
-          <MSDRatesLineChart msdRates={msdRates} height={320} />
-        ) : (
-          <p className="text-base-content/60 text-sm">No rate data</p>
-        )}
+        <Leaderboard selectedRate={selectedRate} />
       </div>
     </>
   );

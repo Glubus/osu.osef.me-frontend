@@ -9,7 +9,6 @@ export const useBeatmapPreviewState = (totalDuration: number) => {
 	// Animation loop pour mettre à jour le temps
 	useEffect(() => {
 		if (!isPlaying) return;
-
 		let lastTime = performance.now();
 		let animationId: number;
 

@@ -4,6 +4,7 @@ import { useBeatmapset } from "@/hooks";
 import BeatmapMSDView from "@/components/organisms/BeatmapMSDView/BeatmapMSDView";
 import BeatmapHeader from "@/components/organisms/BeatmapHeader/BeatmapHeader";
 import BeatmapPreview from "@/components/organisms/BeatmapPreview/BeatmapPreview";
+import MSDRatesLineChart from "@/components/molecules/MSDRatesLineChart/MSDRatesLineChart";
 
 const BeatmapView = () => {
   const { beatmapsetId, beatmapId } = useParams();
@@ -61,6 +62,18 @@ const BeatmapView = () => {
               <BeatmapPreview beatmapId={currentBeatmap.beatmap.osu_id} />
             )}
           </div>
+        </div>
+      </div>
+
+      {/* MSD Rates Line Chart - en dessous des containers */}
+      <div className="mb-6">
+        <div className="bg-base-200 rounded-lg p-4">
+          <h3 className="text-md font-semibold mb-2">Rate evolution</h3>
+          {currentBeatmap.msd && currentBeatmap.msd.length > 0 ? (
+            <MSDRatesLineChart msdRates={currentBeatmap.msd} height={320} />
+          ) : (
+            <p className="text-base-content/60 text-sm">No rate data</p>
+          )}
         </div>
       </div>
     </div>

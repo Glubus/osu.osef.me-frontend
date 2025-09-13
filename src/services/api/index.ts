@@ -15,6 +15,9 @@ export { postBeatmapById, type PostBeatmapByIdRequest, type PostBeatmapByIdRespo
 // External services
 export { fetchOsuFile } from './fetch_osu';
 
+// Leaderboard services
+export { getLeaderboard } from './get_leaderboard';
+
 // Error types and utilities
 export type { ApiError } from '@/types/api/errors';
 export { ApiErrorCode } from '@/types/api/errors';

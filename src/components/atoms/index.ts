@@ -20,3 +20,6 @@ export { default as FilterInput } from './FilterInput';
 export { default as MinMaxRange } from './MinMaxRange';
 export { default as SearchInput } from './SearchInput';
 export { default as PatternSelect } from './PatternSelect';
+
+// Leaderboard atoms
+export { default as ScoreRow } from './ScoreRow';

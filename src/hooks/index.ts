@@ -11,3 +11,6 @@ export * from './preview';
 
 // UI hooks
 export * from './ui';
+
+// Leaderboard hooks
+export * from './leaderboard';
