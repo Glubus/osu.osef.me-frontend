@@ -1,5 +1,4 @@
 import React from "react";
-import Select from "../Select/Select";
 import Tooltip from "../Tooltip/Tooltip";
 import { icons } from "lucide-react";
 
@@ -12,6 +11,20 @@ export interface PatternSelectProps {
   className?: string;
 }
 
+// Couleurs pour chaque pattern
+const PATTERN_COLORS: Record<string, string> = {
+  "": "text-base-content", // All patterns - couleur par défaut
+  "stream": "text-blue-500",
+  "jumpstream": "text-green-500", 
+  "handstream": "text-purple-500",
+  "stamina": "text-red-500",
+  "jackspeed": "text-orange-500",
+  "chordjack": "text-pink-500",
+  "technical": "text-cyan-500",
+  "hybrid": "text-yellow-500",
+  "ln": "text-indigo-500",
+};
+
 const PATTERN_OPTIONS = [
   { value: "", label: "All patterns" },
   { value: "stream", label: "Stream" },
@@ -21,6 +34,8 @@ const PATTERN_OPTIONS = [
   { value: "jackspeed", label: "Jackspeed" },
   { value: "chordjack", label: "Chordjack" },
   { value: "technical", label: "Technical" },
+  { value: "hybrid", label: "Hybrid" },
+  { value: "ln", label: "LN" },
 ];
 
 // Helper component for labels with tooltips
@@ -45,12 +60,22 @@ const PatternSelect: React.FC<PatternSelectProps> = ({
         label="Pattern" 
         tooltip="Filter by specific skillset pattern (Stream, Jumpstream, etc.)" 
       />
-      <Select
+      <select
         id={id}
         value={value}
-        onChange={onChange}
-        options={PATTERN_OPTIONS}
-      />
+        onChange={(e) => onChange(e.target.value)}
+        className="select select-bordered w-full bg-base-100 text-base-content border-base-300 focus:border-primary focus:outline-none"
+      >
+        {PATTERN_OPTIONS.map((option) => (
+          <option 
+            key={option.value} 
+            value={option.value}
+            className={PATTERN_COLORS[option.value] || "text-base-content"}
+          >
+            {option.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };

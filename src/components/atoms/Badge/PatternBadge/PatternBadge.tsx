@@ -10,7 +10,9 @@ const getPatternShortcut = (pattern: string): string => {
     'stamina': 'Stam',
     'stream': 'Stream',
     'chordjack': 'CJ',
-    'technical': 'Tech'
+    'technical': 'Tech',
+    'hybrid': 'Hybrid',
+    'ln': 'LN'
   };
   
   return shortcuts[pattern.toLowerCase()] || pattern;
@@ -25,7 +27,9 @@ const getPatternColor = (pattern: string): string => {
     'stream': 'green',
     'stamina': 'orange',
     'handstream': 'teal',
-    'jackspeed': 'yellow'
+    'jackspeed': 'yellow',
+    'hybrid': 'warning', // Jaune/orange pour hybrid
+    'ln': 'blue' // Bleu pour LN
   };
   
   return colorMap[pattern.toLowerCase()] || 'gray';

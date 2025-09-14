@@ -13,6 +13,19 @@ const logger = createLogger('API:Beatmap');
 export async function getBeatmaps(filters: Filters): Promise<BeatmapFiltersResponse> {
   logger.debug('Fetching beatmaps with filters', filters);
   
+  // Construire l'URL complète pour debug
+  const baseUrl = 'http://localhost:3001';
+  const params = new URLSearchParams();
+  
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      params.append(key, String(value));
+    }
+  });
+  
+  const fullUrl = `${baseUrl}/api/beatmap?${params.toString()}`;
+  console.log('🔗 URL complète envoyée à l\'API:', fullUrl);
+  
   return api.get<BeatmapFiltersResponse>('/api/beatmap', {
     params: filters, // Filters are sent as query string
   });

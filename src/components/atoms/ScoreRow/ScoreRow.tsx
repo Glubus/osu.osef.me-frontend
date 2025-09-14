@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Score } from '@/types/leaderboard';
-import { formatAccuracy, formatScore, formatDate, getRankColor, HIT_COLORS } from '@/utils/leaderboard';
+import { formatAccuracy, formatScore, formatDate, HIT_COLORS } from '@/utils/leaderboard';
 
 interface ScoreRowProps {
   score: Score;
@@ -31,7 +31,7 @@ const ScoreRow: React.FC<ScoreRowProps> = ({ score, rank }) => {
       <td>
         <div className="flex items-center gap-2">
           <span className="font-medium">{score.user.username}</span>
-          <span className={`badge badge-sm ${getRankColor(score.rank)}`}>
+          <span className={`badge badge-sm ${getRankColor(Number(score.rank))}`}>
             {score.rank}
           </span>
         </div>

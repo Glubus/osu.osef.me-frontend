@@ -21,18 +21,7 @@ export const useBeatmapList = (filters: Filters) => {
     };
     
     return ['beatmaps', stableFilters];
-  }, [
-    filters.search_term,
-    filters.overall_min,
-    filters.overall_max,
-    filters.selected_pattern,
-    filters.pattern_min,
-    filters.pattern_max,
-    filters.bpm_min,
-    filters.bpm_max,
-    filters.total_time_min,
-    filters.total_time_max
-  ]);
+  }, [filters]); // Une seule dépendance : l'objet filters complet
 
   const {
     data,
@@ -60,6 +49,8 @@ export const useBeatmapList = (filters: Filters) => {
     refetchOnReconnect: false, // Désactiver le refetch automatique à la reconnexion
     staleTime: 5 * 60 * 1000, // Considérer les données comme fraîches pendant 5 minutes
     gcTime: 10 * 60 * 1000, // Garder en cache pendant 10 minutes
+    retry: 1, // Réduire le nombre de tentatives
+    retryDelay: 1000, // Délai entre les tentatives
   });
 
   // Transformer les données pour garder la même interface

@@ -2,12 +2,12 @@ import React from "react";
 import type { Filters } from "@/types/beatmap/short";
 import { SearchInput, MinMaxRange, PatternSelect } from "@/components/atoms";
 import { useFilterSection } from "@/hooks";
+
 export interface FilterSectionProps {
   filters: Filters;
   onFiltersChange: (filters: Filters) => void;
   onReset?: () => void;
 }
-
 
 const FilterSection: React.FC<FilterSectionProps> = ({ filters, onFiltersChange, onReset }) => {
   const { updateFilter } = useFilterSection({ filters, onFiltersChange });
@@ -72,7 +72,21 @@ const FilterSection: React.FC<FilterSectionProps> = ({ filters, onFiltersChange,
         {/* Pattern selection */}
         <PatternSelect
           value={filters.selected_pattern || ""}
-          onChange={(value) => updateFilter("selected_pattern", value || undefined)}
+          onChange={(value) => {
+            const newFilters = { ...filters };
+            
+            if (value === "") {
+              // All patterns selected - remove pattern filters
+              delete newFilters.selected_pattern;
+              delete newFilters.pattern_min;
+              delete newFilters.pattern_max;
+            } else {
+              // Specific pattern selected
+              newFilters.selected_pattern = value;
+            }
+            
+            onFiltersChange(newFilters);
+          }}
         />
 
         {/* Pattern difficulty range (only show if pattern is selected) */}
