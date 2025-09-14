@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Suspense, lazy } from 'react';
 import Navbar from './components/templates/Navbar';
 import ErrorBoundary from './components/ErrorBoundary';
+import { MAINTENANCE_MODE } from './types/global';
 
 // Lazy load route components for better bundle splitting
 const BeatmapListPage = lazy(() => import('./pages/BeatmapList'));
@@ -13,6 +14,7 @@ const BeatmapsetRedirect = lazy(() => import('./pages/BeatmapsetRedirect'));
 const Roadmap = lazy(() => import('./pages/Roadmap').then(module => ({ default: module.Roadmap })));
 const RandomBeatmaps = lazy(() => import('./pages/RandomBeatmaps'));
 const Help = lazy(() => import('./pages/Help'));
+const Maintenance = lazy(() => import('./pages/Maintenance'));
 
 // Configuration du client React Query
 const queryClient = new QueryClient({
@@ -41,6 +43,26 @@ const LoadingFallback = () => (
 );
 
 const App = () => {
+  // Si le mode maintenance est activé, afficher uniquement la page de maintenance
+  if (MAINTENANCE_MODE) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <ErrorBoundary>
+            <div className="min-h-screen bg-base-100">
+              <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                  <Route path="*" element={<Maintenance />} />
+                </Routes>
+              </Suspense>
+            </div>
+          </ErrorBoundary>
+        </BrowserRouter>
+      </QueryClientProvider>
+    );
+  }
+
+  // Mode normal avec navbar et toutes les routes
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -49,15 +71,15 @@ const App = () => {
             <Navbar />
             <main className="content">
               <Suspense fallback={<LoadingFallback />}>
-                              <Routes>
-                <Route path="/" element={<BeatmapListPage />} />
-                <Route path="/roadmap" element={<Roadmap />} />
-                <Route path="/random" element={<RandomBeatmaps />} />
-                <Route path="/stats" element={<BeatmapStats />} />
-                <Route path="/help" element={<Help />} />
-                <Route path="beatmapsets/:beatmapsetId" element={<BeatmapsetRedirect />} />
-                <Route path="beatmapsets/:beatmapsetId/:beatmapId" element={<BeatmapView />} />
-              </Routes>
+                <Routes>
+                  <Route path="/" element={<BeatmapListPage />} />
+                  <Route path="/roadmap" element={<Roadmap />} />
+                  <Route path="/random" element={<RandomBeatmaps />} />
+                  <Route path="/stats" element={<BeatmapStats />} />
+                  <Route path="/help" element={<Help />} />
+                  <Route path="beatmapsets/:beatmapsetId" element={<BeatmapsetRedirect />} />
+                  <Route path="beatmapsets/:beatmapsetId/:beatmapId" element={<BeatmapView />} />
+                </Routes>
               </Suspense>
             </main>
           </div>
