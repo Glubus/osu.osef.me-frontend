@@ -5,19 +5,23 @@ import { useMemo } from 'react';
 
 export const useBeatmapList = (filters: Filters) => {
   // Créer une clé de query stable basée sur les filtres
-  const queryKey = useMemo(() => [
-    'beatmaps',
-    filters.search_term,
-    filters.overall_min,
-    filters.overall_max,
-    filters.selected_pattern,
-    filters.pattern_min,
-    filters.pattern_max,
-    filters.bpm_min,
-    filters.bpm_max,
-    filters.total_time_min,
-    filters.total_time_max
-  ], [
+  const queryKey = useMemo(() => {
+    // Créer un objet stable avec seulement les propriétés définies
+    const stableFilters = {
+      search_term: filters.search_term,
+      overall_min: filters.overall_min,
+      overall_max: filters.overall_max,
+      selected_pattern: filters.selected_pattern,
+      pattern_min: filters.pattern_min,
+      pattern_max: filters.pattern_max,
+      bpm_min: filters.bpm_min,
+      bpm_max: filters.bpm_max,
+      total_time_min: filters.total_time_min,
+      total_time_max: filters.total_time_max,
+    };
+    
+    return ['beatmaps', stableFilters];
+  }, [
     filters.search_term,
     filters.overall_min,
     filters.overall_max,
@@ -35,10 +39,8 @@ export const useBeatmapList = (filters: Filters) => {
     error,
     fetchNextPage,
     hasNextPage,
-    isFetching,
     isFetchingNextPage,
     status,
-    refetch,
   } = useInfiniteQuery({
     queryKey,
     queryFn: async ({ pageParam = 1 }) => {
@@ -52,7 +54,12 @@ export const useBeatmapList = (filters: Filters) => {
       return lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined;
     },
     initialPageParam: 1,
-    enabled: true, // Toujours activé, les queries se déclenchent automatiquement quand les deps changent
+    enabled: true,
+    refetchOnWindowFocus: false, // Désactiver le refetch automatique au focus
+    refetchOnMount: false, // Désactiver le refetch automatique au mount
+    refetchOnReconnect: false, // Désactiver le refetch automatique à la reconnexion
+    staleTime: 5 * 60 * 1000, // Considérer les données comme fraîches pendant 5 minutes
+    gcTime: 10 * 60 * 1000, // Garder en cache pendant 10 minutes
   });
 
   // Transformer les données pour garder la même interface
@@ -73,9 +80,10 @@ export const useBeatmapList = (filters: Filters) => {
   };
 
   const loadFirstPage = () => {
-    if (beatmaps.length === 0 && !isFetching) {
-      refetch();
-    }
+    // Ne plus forcer le refetch, React Query gère automatiquement le premier appel
+    // if (beatmaps.length === 0 && !isFetching) {
+    //   refetch();
+    // }
   };
 
   return {

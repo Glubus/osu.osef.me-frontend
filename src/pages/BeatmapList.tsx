@@ -1,16 +1,12 @@
 import type React from "react";
-import { useEffect } from "react";
 import BeatmapListTemplate from "@/components/templates/BeatmapListTemplate";
 import { useBeatmapList, useFilters } from "@/hooks";
 
 const BeatmapListPage: React.FC = () => {
   const { filters, updateFilters, resetFilters } = useFilters();
-  const { beatmaps, loading, loadingMore, error, hasMore, loadMore, loadFirstPage } = useBeatmapList(filters);
+  const { beatmaps, loading, loadingMore, error, hasMore, loadMore } = useBeatmapList(filters);
 
-  // Load first page when component mounts
-  useEffect(() => {
-    loadFirstPage();
-  }, [loadFirstPage]);
+  // React Query gère automatiquement le premier appel, pas besoin de loadFirstPage
 
   return (
     <BeatmapListTemplate

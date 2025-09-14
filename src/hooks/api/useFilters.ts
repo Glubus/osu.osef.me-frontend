@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { z } from 'zod';
-import type { Filters } from "@/types/beatmap/short";
 
 const STORAGE_KEY = "beatmap-filters";
 
@@ -9,15 +8,15 @@ const FiltersSchema = z.object({
   page: z.number().int().min(1).default(1),
   per_page: z.number().int().min(1).max(1000).default(100),
   search_term: z.string().optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
-  overall_min: z.number().min(0).max(50).optional(),
-  overall_max: z.number().min(0).max(50).optional(),
+  overall_min: z.number().min(0).max(50).optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
+  overall_max: z.number().min(0).max(50).optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
   selected_pattern: z.string().trim().optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
-  pattern_min: z.number().min(0).optional(),
-  pattern_max: z.number().min(0).optional(),
-  bpm_min: z.number().min(0).optional(),
-  bpm_max: z.number().min(0).optional(),
-  total_time_min: z.number().int().min(0).optional(),
-  total_time_max: z.number().int().min(0).optional(),
+  pattern_min: z.number().min(0).optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
+  pattern_max: z.number().min(0).optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
+  bpm_min: z.number().min(0).optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
+  bpm_max: z.number().min(0).optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
+  total_time_min: z.number().int().min(0).optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
+  total_time_max: z.number().int().min(0).optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
 }).refine(
   (data) => !data.overall_min || !data.overall_max || data.overall_min <= data.overall_max,
   {
@@ -46,11 +45,9 @@ const FiltersSchema = z.object({
 
 type ValidatedFilters = z.infer<typeof FiltersSchema>;
 
-const defaultFilters: ValidatedFilters = {
+const defaultFilters: Partial<ValidatedFilters> = {
   page: 1,
   per_page: 100,
-  search_term: undefined,
-  selected_pattern: undefined,
 };
 
 /**
@@ -58,10 +55,10 @@ const defaultFilters: ValidatedFilters = {
  * Utilise Zod pour valider les données et s'assurer de leur cohérence
  */
 export const useFilters = () => {
-  const [filters, setFilters] = useState<Filters>(defaultFilters);
+  const [filters, setFilters] = useState<Partial<ValidatedFilters>>(defaultFilters);
 
   // Fonction utilitaire pour charger et valider les filtres depuis localStorage
-  const loadFiltersFromStorage = useCallback((): Filters => {
+  const loadFiltersFromStorage = useCallback((): Partial<ValidatedFilters> => {
     try {
       const savedFilters = localStorage.getItem(STORAGE_KEY);
       if (!savedFilters) {
@@ -90,7 +87,7 @@ export const useFilters = () => {
   }, []);
 
   // Fonction utilitaire pour sauvegarder les filtres dans localStorage
-  const saveFiltersToStorage = useCallback((filtersToSave: Filters) => {
+  const saveFiltersToStorage = useCallback((filtersToSave: Partial<ValidatedFilters>) => {
     try {
       // Ne pas sauvegarder la page actuelle
       const { page, ...persistentFilters } = filtersToSave;
@@ -116,10 +113,17 @@ export const useFilters = () => {
   }, [loadFiltersFromStorage]);
 
   // Mettre à jour les filtres avec validation et ajustement automatique
-  const updateFilters = useCallback((newFilters: Filters) => {
+  const updateFilters = useCallback((newFilters: Partial<ValidatedFilters>) => {
     // Ajustement automatique des valeurs avec une fonction utilitaire
-    const adjustFilters = (filters: Filters): Filters => {
+    const adjustFilters = (filters: Partial<ValidatedFilters>): Partial<ValidatedFilters> => {
       const adjusted = { ...filters };
+      
+      // Nettoyer les valeurs undefined pour éviter les problèmes de validation
+      Object.keys(adjusted).forEach(key => {
+        if (adjusted[key as keyof Partial<ValidatedFilters>] === undefined) {
+          delete adjusted[key as keyof Partial<ValidatedFilters>];
+        }
+      });
       
       // Limiter les valeurs overall à 50 maximum
       if (adjusted.overall_min && adjusted.overall_min > 50) {
@@ -130,7 +134,7 @@ export const useFilters = () => {
       }
       
       // Ajustement automatique : si min > max, on met max = min
-      const adjustMinMax = (minKey: keyof Filters, maxKey: keyof Filters) => {
+      const adjustMinMax = (minKey: keyof Partial<ValidatedFilters>, maxKey: keyof Partial<ValidatedFilters>) => {
         const min = adjusted[minKey] as number | undefined;
         const max = adjusted[maxKey] as number | undefined;
         if (min && max && min > max) {
@@ -153,13 +157,23 @@ export const useFilters = () => {
     
     if (validationResult.success) {
       const validatedFilters = validationResult.data;
-      setFilters(validatedFilters);
-      saveFiltersToStorage(validatedFilters);
+      
+      // Vérifier si les filtres ont vraiment changé pour éviter les re-renders inutiles
+      const hasChanged = Object.keys(validatedFilters).some(key => {
+        const currentValue = filters[key as keyof Partial<ValidatedFilters>];
+        const newValue = validatedFilters[key as keyof ValidatedFilters];
+        return currentValue !== newValue;
+      });
+      
+      if (hasChanged) {
+        setFilters(validatedFilters);
+        saveFiltersToStorage(validatedFilters);
+      }
     } else {
       console.error('Filtres invalides fournis à updateFilters:', validationResult.error.format());
       // En cas d'erreur, on garde les filtres actuels sans les modifier
     }
-  }, [saveFiltersToStorage]);
+  }, [saveFiltersToStorage, filters]);
 
   // Réinitialiser les filtres
   const resetFilters = useCallback(() => {
